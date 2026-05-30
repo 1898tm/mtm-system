@@ -3,92 +3,456 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Finance OS · MTM</title>
+<title>Finance OS · Moore Money</title>
 <script src="/jarvis-auth.js"></script>
 <style>
-:root{--gold:#ffd60a;--green:#30d158;--cyan:#0071e3;--red:#ff453a;--bg:#000;--panel:rgba(28,28,30,.92);--border:rgba(255,255,255,.09);--text:rgba(255,255,255,.92);--dim:rgba(255,255,255,.38);--font:'SF Pro Display',-apple-system,BlinkMacSystemFont,sans-serif;}
-*{margin:0;padding:0;box-sizing:border-box;}
-html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:var(--font);}
+:root{--gold:#ffd60a;--green:#30d158;--cyan:#0071e3;--red:#ff453a;--orange:#ff9f0a;--purple:#bf5af2;
+  --bg:#000;--panel:rgba(28,28,30,.92);--border:rgba(255,255,255,.09);
+  --text:rgba(255,255,255,.92);--dim:rgba(255,255,255,.38);--dimmer:rgba(255,255,255,.18);
+  --font:'SF Pro Display',-apple-system,BlinkMacSystemFont,sans-serif;}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:var(--font)}
 body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear-gradient(rgba(255,255,255,.025)1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025)1px,transparent 1px);background-size:48px 48px;pointer-events:none}
-.page{position:relative;z-index:1;max-width:960px;margin:0 auto;padding:2rem 1rem 6rem;}
-.hero{text-align:center;padding:2.5rem 1rem 1.5rem;}
-.hero-label{font-size:.6rem;font-weight:700;letter-spacing:.22em;color:var(--dim);text-transform:uppercase;margin-bottom:.5rem;}
-.hero-title{font-size:2rem;font-weight:800;letter-spacing:-.04em;background:linear-gradient(145deg,#fff 40%,rgba(255,214,10,.6));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-.hero-sub{font-size:.78rem;color:var(--dim);margin-top:.5rem;}
-.section-label{font-size:.58rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--dim);margin-bottom:.75rem;display:flex;align-items:center;gap:.5rem;}
-.section-label::after{content:'';flex:1;height:1px;background:var(--border);}
-.section{margin-bottom:1.6rem;}
-.card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:1.25rem;margin-bottom:.75rem;}
-.card-title{font-size:.88rem;font-weight:700;margin-bottom:.4rem;}
-.card-sub{font-size:.75rem;color:var(--dim);line-height:1.6;}
-.platform-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:.75rem;}
-.platform-card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:1.1rem;}
-.plat-name{font-size:.9rem;font-weight:700;margin-bottom:.25rem;}
-.plat-type{font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:.5rem;}
-.plat-note{font-size:.73rem;color:var(--dim);line-height:1.6;}
-.coming-banner{background:rgba(255,214,10,.07);border:1px solid rgba(255,214,10,.2);border-radius:12px;padding:.9rem 1.1rem;text-align:center;font-size:.78rem;color:rgba(255,214,10,.8);margin-bottom:1.5rem;}
+.page{position:relative;z-index:1;max-width:960px;margin:0 auto;padding:1.5rem 1rem 6rem}
+.hero{text-align:center;padding:2.5rem 1rem 1.5rem}
+.hero-label{font-size:.6rem;font-weight:700;letter-spacing:.22em;color:var(--dim);text-transform:uppercase;margin-bottom:.5rem}
+.hero-title{font-size:2rem;font-weight:800;letter-spacing:-.04em;background:linear-gradient(145deg,#fff 40%,rgba(255,214,10,.7));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-sub{font-size:.78rem;color:var(--dim);margin-top:.5rem}
+.section{margin-bottom:1.6rem}
+.section-label{font-size:.58rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--dimmer);margin-bottom:.75rem;display:flex;align-items:center;gap:.5rem}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border)}
+/* Deadline banner */
+.deadline{background:rgba(255,69,58,.1);border:2px solid rgba(255,69,58,.5);border-radius:14px;padding:1rem 1.2rem;margin-bottom:1.5rem;display:flex;align-items:center;gap:.85rem}
+.deadline-icon{font-size:1.6rem;flex-shrink:0}
+.deadline-text{font-size:.82rem;line-height:1.65}
+.deadline-text strong{color:#fff;font-size:.9rem}
+.deadline-date{font-size:1.1rem;font-weight:800;color:rgba(255,100,100,.95);display:block;margin-bottom:.2rem}
+/* Cards */
+.card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:1.2rem;margin-bottom:.75rem}
+.card.warn{border-color:rgba(255,159,10,.35);background:rgba(255,159,10,.04)}
+.card.danger{border-color:rgba(255,69,58,.35);background:rgba(255,69,58,.04)}
+.card.good{border-color:rgba(48,209,88,.3);background:rgba(48,209,88,.04)}
+.card-title{font-size:.85rem;font-weight:700;margin-bottom:.5rem;display:flex;align-items:center;gap:.5rem}
+.card-body{font-size:.76rem;color:var(--dim);line-height:1.75}
+.card-body strong{color:#fff}
+/* Income / spending table */
+.data-table{width:100%;border-collapse:collapse;font-size:.75rem}
+.data-table th{text-align:left;font-size:.58rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--dimmer);padding:.4rem .6rem;border-bottom:1px solid var(--border)}
+.data-table td{padding:.55rem .6rem;border-bottom:1px solid rgba(255,255,255,.04);color:var(--dim);vertical-align:top}
+.data-table td:first-child{color:#fff;font-weight:500}
+.data-table td.amount{font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+.data-table td.amount.neg{color:rgba(255,100,100,.9)}
+.data-table td.amount.pos{color:rgba(48,209,88,.9)}
+.data-table td.flag{color:rgba(255,159,10,.9);font-size:.68rem}
+.flag-tag{display:inline-block;font-size:.58rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.15rem .55rem;border-radius:980px;margin-right:.3rem}
+.flag-red{background:rgba(255,69,58,.15);color:rgba(255,100,100,.9);border:1px solid rgba(255,69,58,.3)}
+.flag-yellow{background:rgba(255,159,10,.12);color:rgba(255,180,60,.9);border:1px solid rgba(255,159,10,.3)}
+.flag-green{background:rgba(48,209,88,.1);color:rgba(80,220,140,.9);border:1px solid rgba(48,209,88,.3)}
+/* IRS debt */
+.debt-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.6rem}
+.debt-card{background:rgba(255,69,58,.07);border:1px solid rgba(255,69,58,.2);border-radius:12px;padding:.9rem}
+.debt-year{font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,100,100,.7);margin-bottom:.25rem}
+.debt-amount{font-size:1.1rem;font-weight:800;color:rgba(255,100,100,.95)}
+.debt-type{font-size:.65rem;color:var(--dim);margin-top:.2rem}
+/* Statement links */
+.stmt-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:.6rem}
+.stmt-link{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:12px;padding:.8rem 1rem;text-decoration:none;color:var(--text);transition:border-color .15s,background .15s;display:block}
+.stmt-link:hover{border-color:rgba(255,255,255,.2);background:rgba(255,255,255,.06)}
+.stmt-period{font-size:.82rem;font-weight:600;margin-bottom:.2rem}
+.stmt-label{font-size:.62rem;color:var(--dim)}
+/* Accounts */
+.acct-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:.6rem}
+.acct-card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:1rem}
+.acct-name{font-size:.88rem;font-weight:700;margin-bottom:.2rem}
+.acct-type{font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);margin-bottom:.4rem}
+.acct-status{font-size:.65rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.18rem .55rem;border-radius:980px;display:inline-block}
+.status-active{background:rgba(48,209,88,.1);color:rgba(80,220,140,.9);border:1px solid rgba(48,209,88,.3)}
+.status-pending{background:rgba(255,159,10,.1);color:rgba(255,180,60,.9);border:1px solid rgba(255,159,10,.3)}
+/* CPA questions */
+.q-item{background:rgba(255,255,255,.03);border-left:3px solid var(--gold);border-radius:0 10px 10px 0;padding:.75rem 1rem;margin-bottom:.6rem;font-size:.78rem;color:var(--dim);line-height:1.6}
+.q-item strong{color:#fff;display:block;margin-bottom:.2rem}
+/* Equity plan */
+.equity-item{display:flex;justify-content:space-between;align-items:center;padding:.6rem 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:.78rem}
+.equity-item:last-child{border-bottom:none}
+.equity-label{color:var(--dim)}
+.equity-amount{font-weight:700;color:rgba(255,214,10,.9);font-variant-numeric:tabular-nums}
+.equity-note{font-size:.65rem;color:var(--dimmer);margin-top:.1rem}
 </style>
 </head>
 <body>
 <div class="page">
-  <div class="hero">
-    <div class="hero-label">MTM · Finance</div>
-    <div class="hero-title">Finance OS</div>
-    <div class="hero-sub">Building the portfolio while building the brand</div>
+<div class="hero">
+  <div class="hero-label">Moore Money · Finance OS</div>
+  <div class="hero-title">Finance OS</div>
+  <div class="hero-sub">Income · Debt · IRS · Condo · Equity Strategy</div>
+</div>
+
+<!-- CRITICAL DEADLINE -->
+<div class="deadline">
+  <div class="deadline-icon">⚠️</div>
+  <div class="deadline-text">
+    <span class="deadline-date">JUNE 20, 2026 — 22 DAYS</span>
+    <strong>External CPA must be engaged.</strong> IRS liens are active. Schedule E unfiled since 2016. FTB gap. This deadline is in your own Moore Master OS — do not miss it.<br>
+    IRS Lien Line: <strong>1-800-913-6050</strong> (M-F 8am–8pm ET)
   </div>
+</div>
 
-  <div class="coming-banner">📈 Full portfolio dashboard coming soon — connect your accounts to track everything in one place</div>
+<!-- MONTHLY INCOME -->
+<div class="section">
+  <div class="section-label">Monthly Income</div>
+  <div class="card">
+    <table class="data-table">
+      <thead><tr><th>Source</th><th>Amount</th><th>Notes / Flags</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>SSDI (gross)</td>
+          <td class="amount pos">$3,800</td>
+          <td>SSA Treas 310 deposit — appears as ~$1,853 in checking</td>
+        </tr>
+        <tr>
+          <td>SSDI — after deductions</td>
+          <td class="amount pos">$2,600 net</td>
+          <td>After -$900 child support, -$300 Medicare</td>
+        </tr>
+        <tr>
+          <td>SSA Second Deposit</td>
+          <td class="amount pos">~$2,622</td>
+          <td><span class="flag-tag flag-yellow">CLARIFY</span> Second SSA deposit seen every month. Back pay? Malcolm SSI? CPA needs to know what this is.</td>
+        </tr>
+        <tr>
+          <td>Shana Khan (Zelle)</td>
+          <td class="amount pos">~$1,900/mo</td>
+          <td><span class="flag-tag flag-red">TAX ISSUE</span> Rental income — Schedule E NOT filed since 2016. ~$22,800/yr × 8+ years = $182,000+ unreported.</td>
+        </tr>
+        <tr>
+          <td>Turo (car sharing)</td>
+          <td class="amount pos">Variable</td>
+          <td><span class="flag-tag flag-yellow">VERIFY</span> Seen in Oct 2025 statements. Confirm if reported as income.</td>
+        </tr>
+        <tr>
+          <td>Suncoast CU Deposits</td>
+          <td class="amount pos">Variable</td>
+          <td><span class="flag-tag flag-yellow">IDENTIFY</span> Appears in multiple months — source unknown. What account is this from?</td>
+        </tr>
+        <tr>
+          <td>Brenda Yadira Nava Barragan</td>
+          <td class="amount pos">Variable</td>
+          <td>Zelle credits — identify source for CPA</td>
+        </tr>
+        <tr>
+          <td>SSDI SGA Safe Limit</td>
+          <td class="amount">$1,690/mo</td>
+          <td>Max MAVTG business income before SSDI is at risk. Stay under this.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
 
-  <div class="section">
-    <div class="section-label">Your Platforms</div>
-    <div class="platform-grid">
-      <div class="platform-card">
-        <div class="plat-type">Brokerage</div>
-        <div class="plat-name">Robinhood</div>
-        <div class="plat-note">Stocks, ETFs, crypto. Mobile-first trading. Good for active positions and quick moves.</div>
-      </div>
-      <div class="platform-card">
-        <div class="plat-type">Full-Service Brokerage</div>
-        <div class="plat-name">Charles Schwab</div>
-        <div class="plat-note">Retirement accounts, research tools, long-term holdings. The serious money account.</div>
-      </div>
-      <div class="platform-card">
-        <div class="plat-type">Active Trading</div>
-        <div class="plat-name">E*Trade</div>
-        <div class="plat-note">Options, advanced orders, Power E*Trade for active trading. Secondary platform.</div>
-      </div>
+<!-- MONTHLY OBLIGATIONS -->
+<div class="section">
+  <div class="section-label">Monthly Obligations — Seen in Statements</div>
+  <div class="card">
+    <table class="data-table">
+      <thead><tr><th>Payee</th><th>Approx/mo</th><th>Flag</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>Credit One Bank</td>
+          <td class="amount neg">$800–$1,200+</td>
+          <td><span class="flag-tag flag-red">CRITICAL</span> 3–4 payments per month. Multiple accounts or catching up. High-interest subprime. Eating the budget.</td>
+        </tr>
+        <tr>
+          <td>Westlake Services</td>
+          <td class="amount neg">~$2,100</td>
+          <td><span class="flag-tag flag-red">CRITICAL</span> Auto loan — Westlake = subprime lender. $2,100/mo on $2,600 net = 81% of income. Must restructure or exit.</td>
+        </tr>
+        <tr>
+          <td>Villa De Oro (rent)</td>
+          <td class="amount neg">~$1,400–$1,800</td>
+          <td><span class="flag-tag flag-yellow">VERIFY</span> Appears TWICE in April — two payments or two units? Clarify exact monthly amount.</td>
+        </tr>
+        <tr>
+          <td>Nationstar / Rushmore</td>
+          <td class="amount neg">$910</td>
+          <td><span class="flag-tag flag-green">OK</span> CA condo mortgage being paid. 3.75% rate — NEVER refinance.</td>
+        </tr>
+        <tr>
+          <td>HOA (condo)</td>
+          <td class="amount neg">$410</td>
+          <td>Hayward CA — must stay current for equity protection</td>
+        </tr>
+        <tr>
+          <td>Barclaycard US</td>
+          <td class="amount neg">$1,000–$1,300</td>
+          <td>Credit card — additional revolving debt</td>
+        </tr>
+        <tr>
+          <td>Amex Epayment</td>
+          <td class="amount neg">Variable</td>
+          <td><span class="flag-tag flag-yellow">VERIFY</span> Oct 2025: 5 payments in a single day. Multiple Amex accounts?</td>
+        </tr>
+        <tr>
+          <td>Child Support</td>
+          <td class="amount neg">$900</td>
+          <td>To Malcolm — already deducted from SSDI gross</td>
+        </tr>
+        <tr>
+          <td>Medicare Premium</td>
+          <td class="amount neg">$300</td>
+          <td>Deducted from SSDI</td>
+        </tr>
+        <tr>
+          <td>MSPBNA (Schwab)</td>
+          <td class="amount pos">$150</td>
+          <td><span class="flag-tag flag-green">GOOD</span> Investment transfer — keep this going</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- IRS DEBT TRACKER -->
+<div class="section">
+  <div class="section-label">IRS Tax Debt — Active Liens</div>
+  <div class="debt-grid">
+    <div class="debt-card">
+      <div class="debt-year">Tax Year 2011</div>
+      <div class="debt-amount">$34,387.64</div>
+      <div class="debt-type">Notice of Federal Tax Lien — confirmed</div>
+    </div>
+    <div class="debt-card">
+      <div class="debt-year">Tax Year 2012</div>
+      <div class="debt-amount">$13,731.99</div>
+      <div class="debt-type">Notice of Federal Tax Lien — confirmed</div>
+    </div>
+    <div class="debt-card">
+      <div class="debt-year">Tax Year 2015</div>
+      <div class="debt-amount">$21,305.74</div>
+      <div class="debt-type">Balance owed — confirmed</div>
+    </div>
+    <div class="debt-card" style="border-color:rgba(255,159,10,.3);background:rgba(255,159,10,.05)">
+      <div class="debt-year" style="color:rgba(255,180,60,.7)">Years 2014, 2016, 2018, 2020, 2021</div>
+      <div class="debt-amount" style="color:rgba(255,180,60,.9)">Unknown</div>
+      <div class="debt-type">Amounts unknown — pull full IRS transcript</div>
+    </div>
+    <div class="debt-card" style="border-color:rgba(255,69,58,.5)">
+      <div class="debt-year">CONFIRMED TOTAL</div>
+      <div class="debt-amount">$69,425.37+</div>
+      <div class="debt-type">Plus unknown years. Plus potential CA FTB liability.</div>
+    </div>
+    <div class="debt-card" style="border-color:rgba(255,69,58,.5)">
+      <div class="debt-year">RENTAL EXPOSURE</div>
+      <div class="debt-amount">$182,000+</div>
+      <div class="debt-type">Est. unreported Schedule E income 2016–2024. $22,800/yr × 8 yrs = ~$182,400. Tax on this could add significantly to total debt.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ACCOUNTANT REVIEW -->
+<div class="section">
+  <div class="section-label">Bank Statement Review — Navy Federal (May 2025 – Apr 2026)</div>
+
+  <div class="card danger" style="margin-bottom:.75rem">
+    <div class="card-title">🔴 Critical — Rental Income Not Reported</div>
+    <div class="card-body">
+      <strong>Schedule E has not been filed since 2016.</strong> Shana Khan (shana510@yahoo.com) is paying ~$1,900/mo via Zelle — visible in multiple statements. That's $22,800/year in rental income from your Hayward CA condo. Over 8+ years that's approximately $182,000+ in gross unreported rental income. The IRS already has liens on you from prior years. This is the single biggest tax exposure. Your CPA needs to do amended returns or negotiate directly with IRS. Do not let this sit another month.
     </div>
   </div>
 
-  <div class="section">
-    <div class="section-label">Financial Pillars</div>
-    <div class="card">
-      <div class="card-title">Strategy: Build While Building</div>
-      <div class="card-sub">
-        The goal is to grow the portfolio in parallel with MAVTG — each business milestone funds the next investment step.
-        Brand growth and portfolio growth reinforce each other.<br><br>
-        <strong style="color:#fff;">Focus areas:</strong> Index funds for stability · Growth stocks for upside · MAVTG brand investments · Real estate (post-transplant goal)
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">Budget Rule — $100/mo AI Budget Cap</div>
-      <div class="card-sub">Current AI tools (Claude Code, etc.) capped at $100/month. Track this separately from investment budget.</div>
+  <div class="card danger" style="margin-bottom:.75rem">
+    <div class="card-title">🔴 Critical — Two SSA Deposits Monthly</div>
+    <div class="card-body">
+      Every month shows two separate SSA Treas 310 deposits. Seen clearly in April 2026 (~$1,853 + ~$2,622 = ~$4,475). <strong>What is the second deposit?</strong> Options: SSDI back pay installments, Malcolm's SSI under a representative payee arrangement, or a separate benefit. The IRS will match both deposits to your SSN on tax returns. CPA needs to know exactly what each deposit is so they can be reported correctly.
     </div>
   </div>
 
-  <div class="section">
-    <div class="section-label">Coming Features</div>
-    <div class="card">
-      <div class="card-sub" style="line-height:2;">
-        ○ Portfolio value tracker (pull from each platform)<br>
-        ○ Monthly P&L summary<br>
-        ○ Goal milestone tracker (tied to MAVTG revenue)<br>
-        ○ Budget vs. spend dashboard<br>
-        ○ Dividend tracker<br>
-        ○ Net worth snapshot
-      </div>
+  <div class="card warn" style="margin-bottom:.75rem">
+    <div class="card-title">🟡 Important — Westlake Auto Loan</div>
+    <div class="card-body">
+      Westlake Financial Services payment of approximately $2,100/month seen in April 2026. <strong>That is 81% of your $2,600 net take-home on one debt.</strong> Westlake is a subprime auto lender — meaning high interest rate. You cannot sustain this. Options: voluntary surrender if vehicle is underwater, refinance if credit allows, or negotiate payoff. CPA and/or financial advisor should review this alongside the full picture.
     </div>
   </div>
+
+  <div class="card warn" style="margin-bottom:.75rem">
+    <div class="card-title">🟡 Important — Multiple Credit One Payments Per Month</div>
+    <div class="card-body">
+      April 2026 shows 4 separate Credit One Bank payments: $485 + $59.99 + $216.51 + $391.08 = <strong>$1,152.58 in one month.</strong> This suggests either multiple Credit One accounts or you are making catch-up payments alongside minimums. Either way this is unsustainable and needs a debt consolidation strategy post-CPA engagement.
+    </div>
+  </div>
+
+  <div class="card warn" style="margin-bottom:.75rem">
+    <div class="card-title">🟡 Important — California FTB Gap</div>
+    <div class="card-body">
+      Voter registration is still California. You moved to Florida in February 2025. <strong>California Franchise Tax Board may be treating you as a CA resident</strong> and taxing all your income — including SSDI (which FL does not tax) and rental income — at CA rates. This needs to be resolved with the CPA. You need to formally establish FL domicile and notify FTB that you are no longer a CA resident.
+    </div>
+  </div>
+
+  <div class="card good">
+    <div class="card-title">✅ What's Working</div>
+    <div class="card-body">
+      Nationstar/Rushmore mortgage payment current ✅ · Schwab transfer ($150/mo) consistent ✅ · Shana Khan paying rent reliably ✅ · SSDI arriving on schedule ✅ · Wise account active for international travel ✅
+    </div>
+  </div>
+</div>
+
+<!-- QUESTIONS TO BRING TO CPA -->
+<div class="section">
+  <div class="section-label">Questions — Bring to CPA Meeting</div>
+  <div class="q-item">
+    <strong>1. Schedule E — Rental Income</strong>
+    "I have not filed Schedule E since 2016 on my Hayward CA rental property at 25228 Copa Del Oro Dr, Unit 93. Tenant has been paying ~$1,900/mo. How do we resolve this with the existing IRS liens — amended returns, OIC, or installment?"
+  </div>
+  <div class="q-item">
+    <strong>2. IRS Transcript + Total Exposure</strong>
+    "I have confirmed liens for 2011 ($34,387), 2012 ($13,731), and 2015 ($21,305). I need a full transcript pull for 2014, 2016, 2018, 2020, 2021 to know my total exposure. What is the fastest path to resolution — Offer in Compromise, CNC status, or installment agreement?"
+  </div>
+  <div class="q-item">
+    <strong>3. Two SSA Deposits Monthly</strong>
+    "I receive two separate SSA Treas 310 deposits each month. I need to confirm what each one is and whether both are being reported correctly on my returns."
+  </div>
+  <div class="q-item">
+    <strong>4. California FTB</strong>
+    "I moved to Florida in February 2025. My voter registration is still California. What is my FTB exposure and what do I need to do to formally establish FL residency and close my CA tax file?"
+  </div>
+  <div class="q-item">
+    <strong>5. SSDI Safe Harbor for Business Income</strong>
+    "I am starting MAVTG LLC and need to keep self-employment income under the SGA limit ($1,690/mo gross) to protect my SSDI. How do I structure MAVTG income, track it, and report it without triggering a SSDI review?"
+  </div>
+  <div class="q-item">
+    <strong>6. Malcolm ETF + Malcolm Fund Strategy</strong>
+    "I have a Malcolm ETF running — confirm whether this should be UTMA/UGMA or 529 for optimal tax treatment. Also planning a $25,000 whole life or trust for him at 18."
+  </div>
+</div>
+
+<!-- CONDO EQUITY PLAN -->
+<div class="section">
+  <div class="section-label">Condo Equity Deployment — When Tax & Deed Are Resolved</div>
+  <div class="card">
+    <div class="card-body" style="margin-bottom:.75rem">
+      <strong>Property:</strong> 25228 Copa Del Oro Dr, Unit 93, Hayward CA 94545 · APN: 442-51-136<br>
+      <strong>Estimated equity:</strong> ~$200,000+ · Mortgage: $117,622 @ 3.75% — <strong style="color:rgba(255,100,100,.9)">NEVER REFINANCE</strong><br>
+      <strong>Blockers:</strong> (1) Grandmother on deed — needs resolution · (2) IRS liens must clear before HELOC · (3) FTB must be resolved<br>
+      <strong>Tenant:</strong> Shana Khan · $1,900/mo · Month-to-month since Aug 31, 2025
+    </div>
+    <div class="equity-item"><span class="equity-label">Emergency Reserve</span><span class="equity-amount">$50,000</span></div>
+    <div class="equity-item"><span class="equity-label" style="font-size:.72rem;color:var(--dimmer)">→ Amex HYSA (4%+) — untouched unless emergency</span><span></span></div>
+    <div class="equity-item"><span class="equity-label">International Living Fund</span><span class="equity-amount">$30,000–$50,000</span></div>
+    <div class="equity-item"><span class="equity-label" style="font-size:.72rem;color:var(--dimmer)">→ 18–24 months post-transplant travel</span><span></span></div>
+    <div class="equity-item"><span class="equity-label">Moore Foundation Capital</span><span class="equity-amount">$25,000–$40,000</span></div>
+    <div class="equity-item"><span class="equity-label">Malcolm Fund</span><span class="equity-amount">$25,000</span></div>
+    <div class="equity-item"><span class="equity-label" style="font-size:.72rem;color:var(--dimmer)">→ Whole life policy or trust (age 18, Sept 2028)</span><span></span></div>
+    <div class="equity-item"><span class="equity-label">Family Compound Fund</span><span class="equity-amount">$100,000–$150,000</span></div>
+    <div class="equity-item"><span class="equity-label" style="font-size:.72rem;color:var(--dimmer)">→ Sacramento-Delta waterfront (long-term goal)</span><span></span></div>
+    <div class="equity-item"><span class="equity-label">Keep Undrawn in Line</span><span class="equity-amount">$50,000–$80,000</span></div>
+    <div class="equity-item"><span class="equity-label">Crypto (~$10k)</span><span class="equity-amount">HOLD</span></div>
+    <div class="equity-item"><span class="equity-label" style="font-size:.72rem;color:var(--dimmer)">→ Donate appreciated crypto to Moore Foundation (eliminates cap gains)</span><span></span></div>
+  </div>
+</div>
+
+<!-- BANK STATEMENTS -->
+<div class="section">
+  <div class="section-label">Bank Statements — Navy Federal (tap to open in Drive)</div>
+  <div class="stmt-grid">
+    <a class="stmt-link" href="https://drive.google.com/file/d/1vhUQu5spqfZUkYGD9hVwg22xLjpYfnj1/view" target="_blank">
+      <div class="stmt-period">March 27 – April 26, 2026</div>
+      <div class="stmt-label">Most Recent · Navy Federal</div>
+    </a>
+    <a class="stmt-link" href="https://drive.google.com/file/d/1D8CBapCBncXcP9eUNRQ-qV2vbrUrgQX1/view" target="_blank">
+      <div class="stmt-period">Feb 27 – March 26, 2026</div>
+      <div class="stmt-label">Navy Federal</div>
+    </a>
+    <a class="stmt-link" href="https://drive.google.com/file/d/18wwazyaUDQ1g_EOPAZULpT93t3N-Umbp/view" target="_blank">
+      <div class="stmt-period">Jan 27 – Feb 26, 2026</div>
+      <div class="stmt-label">Navy Federal</div>
+    </a>
+    <a class="stmt-link" href="https://drive.google.com/file/d/1wyDO9MJK1g7g8wO4SWpemvmrHg9U8vv3/view" target="_blank">
+      <div class="stmt-period">Dec 27 – Jan 26, 2026</div>
+      <div class="stmt-label">Navy Federal</div>
+    </a>
+    <a class="stmt-link" href="https://drive.google.com/file/d/1fDofc8PXT83fUJv8zclz2gxhQf3oVqcN/view" target="_blank">
+      <div class="stmt-period">Nov 27 – Dec 26, 2025</div>
+      <div class="stmt-label">Navy Federal</div>
+    </a>
+    <a class="stmt-link" href="https://drive.google.com/file/d/1sAtf5_rUBnIkoHDJM07ljzBwZ29JCs1Y/view" target="_blank">
+      <div class="stmt-period">Oct 27 – Nov 26, 2025</div>
+      <div class="stmt-label">Navy Federal</div>
+    </a>
+    <a class="stmt-link" href="https://drive.google.com/file/d/1rYp5b6WcMJiovuc29ckCvNB22XBUb3gd/view" target="_blank">
+      <div class="stmt-period">Sep 27 – Oct 26, 2025</div>
+      <div class="stmt-label">Navy Federal</div>
+    </a>
+    <a class="stmt-link" href="https://drive.google.com/file/d/1hjBN7xDFjJ-mL6Zm8WvQlbXh81jrRXjX/view" target="_blank">
+      <div class="stmt-period">Aug 27 – Sep 26, 2025</div>
+      <div class="stmt-label">Navy Federal</div>
+    </a>
+    <a class="stmt-link" href="https://drive.google.com/file/d/1fx00e8o1BzWjY4ttQqa78WElSGxhBilC/view" target="_blank">
+      <div class="stmt-period">Jul 27 – Aug 26, 2025</div>
+      <div class="stmt-label">Navy Federal</div>
+    </a>
+    <a class="stmt-link" href="https://drive.google.com/file/d/10SpMcblAk4W2ZWSkTa7ourMcQ0ZLjzzX/view" target="_blank">
+      <div class="stmt-period">Jun 27 – Jul 26, 2025</div>
+      <div class="stmt-label">Navy Federal</div>
+    </a>
+    <a class="stmt-link" href="https://drive.google.com/file/d/1kOd_loYLU-u-9yadCE5LU5OpWdQLcNx3/view" target="_blank">
+      <div class="stmt-period">May 27 – Jun 26, 2025</div>
+      <div class="stmt-label">Navy Federal</div>
+    </a>
+    <a class="stmt-link" href="https://drive.google.com/file/d/1sASYTgLQIZECW7VHv2fS9lokgSDp3Ph5/view" target="_blank">
+      <div class="stmt-period">Apr 27 – May 26, 2025</div>
+      <div class="stmt-label">Oldest Available</div>
+    </a>
+  </div>
+</div>
+
+<!-- ACCOUNTS -->
+<div class="section">
+  <div class="section-label">Your Accounts</div>
+  <div class="acct-grid">
+    <div class="acct-card">
+      <div class="acct-type">Primary Checking</div>
+      <div class="acct-name">Schwab High Yield Investor</div>
+      <div class="acct-status status-active">Active</div>
+    </div>
+    <div class="acct-card">
+      <div class="acct-type">International</div>
+      <div class="acct-name">Wise Multi-Currency</div>
+      <div class="acct-status status-active">Active</div>
+    </div>
+    <div class="acct-card">
+      <div class="acct-type">Business</div>
+      <div class="acct-name">Grow Financial (MAVTG)</div>
+      <div class="acct-status status-active">Active</div>
+    </div>
+    <div class="acct-card">
+      <div class="acct-type">Military Banking</div>
+      <div class="acct-name">Navy Federal CU #7199859997</div>
+      <div class="acct-status status-active">Active — Statements linked above</div>
+    </div>
+    <div class="acct-card">
+      <div class="acct-type">High Yield Savings</div>
+      <div class="acct-name">Amex HYSA</div>
+      <div class="acct-status status-pending">Not Yet Active</div>
+    </div>
+    <div class="acct-card">
+      <div class="acct-type">Savings</div>
+      <div class="acct-name">Capital One</div>
+      <div class="acct-status status-pending">Not Yet Active</div>
+    </div>
+  </div>
+</div>
+
+<!-- MASTER OS LINK -->
+<div class="section">
+  <div class="section-label">Source Documents</div>
+  <div class="card">
+    <div class="card-body" style="line-height:2.2">
+      <a href="https://docs.google.com/document/d/14yTdg0xH5bKw1yfK3e-4oD3ZntJ4bsEekAdAKSWITP0/edit" target="_blank" style="color:rgba(255,214,10,.8);text-decoration:none">📄 Moore Master OS — Final Complete (May 2026)</a><br>
+      <a href="https://docs.google.com/document/d/1nKl-EbHLtyaYK04oBS-uzEXwhIWPP3RHZjU5FUMg56Q/edit" target="_blank" style="color:rgba(255,214,10,.8);text-decoration:none">📄 Moore Life OS — Master Command Document v2</a><br>
+      <a href="https://docs.google.com/document/d/1llP2RTR6zfYJdwb2eMYG6ZKCm-4_BAFnLksPjzS6X8I/edit" target="_blank" style="color:rgba(100,180,255,.8);text-decoration:none">📄 Claude Session Notes — May 27–29, 2026</a>
+    </div>
+  </div>
+</div>
+
 </div>
 <script src="/jarvis-nav.js"></script>
 </body>
