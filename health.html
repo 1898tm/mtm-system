@@ -34,6 +34,21 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
 .emerg-item{font-size:.8rem;color:var(--dim);padding:.3rem 0;border-bottom:1px solid rgba(255,255,255,.05);}
 .emerg-item:last-child{border-bottom:none;}
 .emerg-item strong{color:#fff;}
+.blur-shield{filter:blur(6px);transition:filter .3s;cursor:pointer;user-select:none;}
+.blur-shield.revealed{filter:none;}
+.blur-toggle-btn{display:inline-flex;align-items:center;gap:.4rem;font-size:.68rem;font-weight:600;color:var(--dim);background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:980px;padding:.28rem .75rem;cursor:pointer;transition:color .15s,background .15s;margin-bottom:.9rem;}
+.blur-toggle-btn:hover{color:#fff;background:rgba(255,255,255,.1);}
+.condition-grid{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;}
+@media(max-width:520px){.condition-grid{grid-template-columns:1fr;}}
+.condition-card{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:12px;padding:.9rem;}
+.condition-name{font-size:.82rem;font-weight:700;color:#fff;margin-bottom:.25rem;}
+.condition-detail{font-size:.72rem;color:var(--dim);line-height:1.6;}
+.checkup-card{background:rgba(255,214,10,.05);border:1px solid rgba(255,214,10,.2);border-radius:14px;padding:1.1rem;}
+.checkup-title{font-size:.75rem;font-weight:700;color:rgba(255,214,10,.9);margin-bottom:.6rem;letter-spacing:.05em;text-transform:uppercase;}
+.checkup-item{font-size:.78rem;color:var(--dim);padding:.3rem 0;border-bottom:1px solid rgba(255,255,255,.05);display:flex;justify-content:space-between;align-items:center;}
+.checkup-item:last-child{border-bottom:none;}
+.checkup-item strong{color:#fff;}
+.checkup-due{font-size:.7rem;font-weight:600;padding:.15rem .5rem;border-radius:6px;background:rgba(255,214,10,.1);color:rgba(255,214,10,.85);}
 </style>
 </head>
 <body>
@@ -47,6 +62,51 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
   <div class="status-live">
     <div class="status-dot"></div>
     <div class="status-text"><strong>Status: Active Dialysis Patient</strong> · Top of Florida transplant list · 6 years on dialysis</div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Active Conditions</div>
+    <button class="blur-toggle-btn" id="blurToggle" onclick="toggleBlur()">🔒 Tap to reveal health data</button>
+    <div class="condition-grid" id="conditionGrid">
+      <div class="condition-card blur-shield">
+        <div class="condition-name">🫘 Chronic Kidney Disease</div>
+        <div class="condition-detail">Stage 5 / ESRD · Hemodialysis 3× week · Top of FL transplant list · 6 yrs on dialysis</div>
+      </div>
+      <div class="condition-card blur-shield">
+        <div class="condition-name">❤️ High Blood Pressure</div>
+        <div class="condition-detail">Hypertension · Managed with medication · Monitor BP daily · Target: &lt;130/80</div>
+      </div>
+      <div class="condition-card blur-shield">
+        <div class="condition-name">😴 Sleep Apnea</div>
+        <div class="condition-detail">Obstructive sleep apnea · CPAP required nightly · Travel: pack machine in carry-on</div>
+      </div>
+      <div class="condition-card blur-shield">
+        <div class="condition-name">🧠 Stress Management</div>
+        <div class="condition-detail">Chronic illness related stress · Faith practice · Regular decompression required · Track triggers</div>
+      </div>
+      <div class="condition-card blur-shield">
+        <div class="condition-name">🩸 Diabetes</div>
+        <div class="condition-detail">Type 2 · Managed with diet + medication · Monitor blood glucose · A1C tracking required</div>
+      </div>
+      <div class="condition-card blur-shield">
+        <div class="condition-name">🎗️ Prostate Cancer</div>
+        <div class="condition-detail">Under active surveillance · PSA monitoring · Oncology follow-up required · Do not delay annual screen</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Annual Checkups — Never Skip</div>
+    <div class="checkup-card">
+      <div class="checkup-title">⚠️ Get Your Annual Checkup</div>
+      <div class="checkup-item"><span><strong>Nephrology</strong> — Dr. Reid (Kidney)</span><span class="checkup-due">Every 3 months</span></div>
+      <div class="checkup-item"><span><strong>Oncology</strong> — Prostate / PSA screen</span><span class="checkup-due">Annual</span></div>
+      <div class="checkup-item"><span><strong>Cardiology</strong> — BP + heart function</span><span class="checkup-due">Annual</span></div>
+      <div class="checkup-item"><span><strong>Endocrinology</strong> — A1C / Diabetes panel</span><span class="checkup-due">Every 6 months</span></div>
+      <div class="checkup-item"><span><strong>Sleep Study</strong> — CPAP compliance review</span><span class="checkup-due">Annual</span></div>
+      <div class="checkup-item"><span><strong>Labs</strong> — CBC, BMP, phosphorus, potassium</span><span class="checkup-due">Monthly</span></div>
+      <div class="checkup-item"><span><strong>Mental Health</strong> — Stress / emotional check-in</span><span class="checkup-due">As needed</span></div>
+    </div>
   </div>
 
   <div class="section">
@@ -127,5 +187,15 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear
   </div>
 </div>
 <script src="/jarvis-nav.js"></script>
+<script>
+var revealed = false;
+function toggleBlur() {
+  revealed = !revealed;
+  var cards = document.querySelectorAll('.blur-shield');
+  var btn = document.getElementById('blurToggle');
+  cards.forEach(function(c){ revealed ? c.classList.add('revealed') : c.classList.remove('revealed'); });
+  btn.textContent = revealed ? '🔓 Tap to hide health data' : '🔒 Tap to reveal health data';
+}
+</script>
 </body>
 </html>
