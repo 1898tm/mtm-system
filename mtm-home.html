@@ -152,13 +152,14 @@ body::before{content:'';position:fixed;inset:0;z-index:0;
   <div class="voice-status" id="voice-status">Listening…</div>
   <div class="voice-transcript" id="voice-transcript"></div>
   <div class="voice-commands">Say: Style · Travel · Dating · Health · Finance · Books · MAVTG · Home</div>
-  <div style="display:flex;gap:.5rem;width:100%;max-width:300px;">
-    <input id="voice-text" type="text" placeholder="Or type a command…"
+  <div style="display:flex;gap:.5rem;width:100%;max-width:320px;">
+    <input id="voice-text" type="text" placeholder="Type a command or question…"
       style="flex:1;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);border-radius:10px;padding:.55rem .85rem;color:#fff;font-size:.82rem;font-family:inherit;outline:none;"
-      onkeydown="if(event.key==='Enter'){processCommand(this.value);this.value='';}">
-    <button onclick="var v=document.getElementById('voice-text');processCommand(v.value);v.value='';"
+      onkeydown="if(event.key==='Enter'){handleTextInput(this.value);this.value='';}">
+    <button onclick="var v=document.getElementById('voice-text');handleTextInput(v.value);v.value='';"
       style="background:rgba(255,214,10,.15);border:1px solid rgba(255,214,10,.4);border-radius:10px;padding:.55rem .85rem;color:rgba(255,214,10,.9);font-size:.8rem;cursor:pointer;font-family:inherit;">Go</button>
   </div>
+  <div id="voice-response" style="display:none;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);border-radius:12px;padding:.85rem 1rem;font-size:.8rem;color:#fff;max-width:320px;width:100%;text-align:left;line-height:1.6;"></div>
   <button class="voice-cancel" onclick="stopVoice()">Cancel</button>
 </div>
 
@@ -428,7 +429,6 @@ body::before{content:'';position:fixed;inset:0;z-index:0;
         <div class="quick-item"><span>Push GitHub</span><code>git push origin main</code></div>
         <div class="quick-item"><span>MTM check</span><code>railway status</code></div>
         <div class="quick-item"><span>MTM logs</span><code>railway logs</code></div>
-        <div class="quick-item"><span>SSDI SGA limit</span><strong>$1,690/mo gross max</strong></div>
         <div class="quick-item"><span>⚠️ CPA deadline</span><strong>June 20, 2026</strong></div>
       </div>
       <div class="quick-card">
@@ -547,6 +547,54 @@ function stopVoice() {
   document.getElementById('hero-monogram').classList.remove('listening');
 }
 
+var QUICK_ANSWERS = {
+  'cpa': '⚠️ June 20, 2026 — CPA must be engaged. IRS liens active. Call 1-800-913-6050.',
+  'deadline': '⚠️ June 20, 2026 — CPA deadline. Also Laura Pfeiffer follow-up Tuesday June 2 at 2pm.',
+  'laura': 'Laura Pfeiffer — laura@wclaw.com · Malcolm case status follow-up. Reminder set for Tuesday June 2 at 2pm.',
+  'dr reid': 'Dr. Reid (Nephrologist) — 727-828-6370',
+  'davita': 'DaVita Tampa: Brittany Welch 813-871-3202 · Travel: Frank Prather · Auth: Jenny Lopez Melo jenny.lopezmelo@davita.com',
+  'mavtg phone': '813-666-7433 · info@mavtg.com',
+  'irs': 'IRS Lien Line: 1-800-913-6050 · Confirmed liens: 2011 ($34,387) · 2012 ($13,731) · 2015 ($21,305)',
+  'ein': 'EIN: 42-2505575',
+  'duns': 'DUNS: 145016354 · Assigned May 12, 2026',
+  'shana': 'Shana Khan — shana510@yahoo.com · $1,900/mo · Lease expires August 6, 2026',
+  'pin': 'Your MTM PIN is set on this device. If you need to reset it, clear your browser storage.',
+  'rajawongse': 'Rajawongse Clothier · 130 Sukhumvit Rd · dress-for-success.com · Bangkok. Measurements: Jacket 44R · Waist 34" · Inseam 30" · Shoe 11-11.5 EE Wide',
+  'suit': 'Suit 1: Navy VBC Tropical · Suit 2: Stone Solbiati blend · Both at Rajawongse, 130 Sukhumvit, Bangkok',
+  'fragrance': 'Signature: Nishane Hacivat Extrait. Also: Parfums de Marly Greenley (day) · Xerjoff Naxos (evening) · Amouage Reflection Man (evening). Own: Kilian Intoxicated + Angels Share.',
+  'signature scent': 'Nishane Hacivat Extrait — pineapple, bergamot, oakmoss. 2 sprays max in heat. 10-12 hrs.',
+  'hinge': 'Hinge — switch location to Bangkok, Lisbon, or São Paulo before arriving. Premium required. $30/mo.',
+  'foundation': 'Moore Foundation — 501(c)(3) in formation. Board: Bea (Chair), Casandra (President/CPA), MM (Treasurer), Monica (Secretary). Thanksgiving 2026 family meeting planned.',
+  'malcolm': 'Malcolm Moore · DOB Sept 28, 2010 · Turns 18 Sept 2028. E*Trade account active. MAVTG contractor employment planned.',
+  'hazel': 'Hazel Moore (age 95) — irrevocable trust MUST be filed immediately. Priority Zero. Medicaid 5-year lookback.',
+};
+
+function handleTextInput(text) {
+  if (!text.trim()) return;
+  var t = text.toLowerCase().trim();
+
+  // Check quick answers first
+  var response = null;
+  for (var key in QUICK_ANSWERS) {
+    if (t.indexOf(key) !== -1) { response = QUICK_ANSWERS[key]; break; }
+  }
+
+  if (response) {
+    // Show response in the overlay
+    var respEl = document.getElementById('voice-response');
+    if (respEl) {
+      respEl.style.display = 'block';
+      respEl.textContent = response;
+    }
+    document.getElementById('voice-status').textContent = 'Answer:';
+    document.getElementById('voice-transcript').textContent = '';
+    return;
+  }
+
+  // Otherwise try navigation
+  processCommand(text);
+}
+
 function processCommand(text) {
   var t = text.toLowerCase().trim();
   var routes = {
@@ -568,8 +616,12 @@ function processCommand(text) {
     'legacy':   'books.html',
     'writing':  'books.html',
     'services': 'services.html',
+    'vault':    'vault.html',
+    'input':    'input.html',
+    'business': 'business.html',
     'mavtg':    'https://www.mavtg.com',
     'website':  'https://www.mavtg.com',
+    'shop':     'https://www.mavtg.com/shop',
     'home':     'mtm-home.html',
   };
   var dest = null;
@@ -582,6 +634,14 @@ function processCommand(text) {
       if (dest.startsWith('http')) window.open(dest, '_blank');
       else window.location.href = dest;
     }, 200);
+  } else {
+    // Show "not found" in response area
+    var respEl = document.getElementById('voice-response');
+    if (respEl) {
+      respEl.style.display = 'block';
+      respEl.textContent = 'Say: style · travel · dating · health · finance · books · vault · business · mavtg · home — or ask about CPA, Dr. Reid, IRS, Rajawongse, fragrances, Foundation, and more.';
+    }
+    document.getElementById('voice-status').textContent = 'Try:';
   }
 }
 </script>
