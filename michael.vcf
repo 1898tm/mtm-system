@@ -1,0 +1,21 @@
+BEGIN:VCARD
+VERSION:3.0
+N:Moore;Thurmond Michael;;;
+FN:Michael Moore
+NICKNAME:Michael
+ORG:MAVTG LLC;Medical Adventure Voyage Travel Group
+TITLE:Founder & Sole Member
+TEL;TYPE=CELL,PREF:+19257277877
+TEL;TYPE=WORK:+18136667433
+EMAIL;TYPE=INTERNET,PREF:1898tm@gmail.com
+EMAIL;TYPE=WORK:info@mavtg.com
+ADR;TYPE=WORK:;;610 E Zack St\, Suite 110-4063;Tampa;FL;33602;USA
+URL;TYPE=WORK:https://www.mavtg.com
+X-SOCIALPROFILE;TYPE=instagram:https://instagram.com/mavtg
+X-SOCIALPROFILE;TYPE=tiktok:https://tiktok.com/@mavtg
+X-SOCIALPROFILE;TYPE=youtube:https://youtube.com/@mavtg
+X-SOCIALPROFILE;TYPE=twitter:https://x.com/mavtg
+X-SOCIALPROFILE;TYPE=facebook:https://facebook.com/mavtg
+NOTE:EIN: 42-2505575 | Moore Legacy Press | Fidelis Audax Et Invictus | SSDI: 925-727-7877 cell | Business: 813-666-7433
+BDAY:19750516
+END:VCARD

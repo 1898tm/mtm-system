@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Business · Moore Money</title>
+<script src="/jarvis-auth.js"></script>
+<style>
+:root{--gold:#ffd60a;--green:#30d158;--cyan:#0071e3;--red:#ff453a;--orange:#ff9f0a;--purple:#bf5af2;
+  --bg:#000;--panel:rgba(28,28,30,.92);--border:rgba(255,255,255,.09);
+  --text:rgba(255,255,255,.92);--dim:rgba(255,255,255,.38);--dimmer:rgba(255,255,255,.18);
+  --font:'SF Pro Display',-apple-system,BlinkMacSystemFont,sans-serif;}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:var(--font)}
+body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear-gradient(rgba(255,255,255,.025)1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025)1px,transparent 1px);background-size:48px 48px;pointer-events:none}
+.page{position:relative;z-index:1;max-width:960px;margin:0 auto;padding:1.5rem 1rem 6rem}
+.hero{text-align:center;padding:2rem 1rem 1.5rem}
+.hero-label{font-size:.6rem;font-weight:700;letter-spacing:.22em;color:var(--dim);text-transform:uppercase;margin-bottom:.4rem}
+.hero-title{font-size:2rem;font-weight:800;letter-spacing:-.04em;background:linear-gradient(145deg,#fff 40%,rgba(255,214,10,.7));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-sub{font-size:.75rem;color:var(--dim);margin-top:.4rem}
+.section{margin-bottom:1.6rem}
+.section-label{font-size:.58rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--dimmer);margin-bottom:.75rem;display:flex;align-items:center;gap:.5rem}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* Contact card */
+.contact-card{background:rgba(255,214,10,.06);border:1px solid rgba(255,214,10,.25);border-radius:18px;padding:1.5rem;margin-bottom:1rem;text-align:center}
+.contact-name{font-size:1.4rem;font-weight:800;letter-spacing:-.02em;margin-bottom:.2rem}
+.contact-title{font-size:.75rem;color:rgba(255,214,10,.75);font-weight:600;letter-spacing:.08em;text-transform:uppercase;margin-bottom:1rem}
+.contact-actions{display:flex;gap:.6rem;justify-content:center;flex-wrap:wrap;margin-bottom:1.2rem}
+.cta-btn{display:inline-flex;align-items:center;gap:.4rem;padding:.6rem 1.2rem;border-radius:980px;font-size:.78rem;font-weight:700;text-decoration:none;cursor:pointer;font-family:var(--font);border:none;transition:all .15s}
+.cta-primary{background:var(--gold);color:#000}
+.cta-primary:hover{opacity:.88}
+.cta-secondary{background:rgba(255,255,255,.08);color:#fff;border:1px solid var(--border)}
+.cta-secondary:hover{background:rgba(255,255,255,.14)}
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;text-align:left}
+@media(max-width:480px){.contact-grid{grid-template-columns:1fr}}
+.contact-row{display:flex;flex-direction:column;gap:.1rem}
+.contact-label{font-size:.58rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--dimmer)}
+.contact-value{font-size:.82rem;font-weight:500;color:#fff}
+.contact-value a{color:#fff;text-decoration:none}
+.contact-value a:hover{color:var(--gold)}
+
+/* Info cards */
+.info-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:.65rem}
+.info-card{background:var(--panel);border:1px solid var(--border);border-radius:13px;padding:1rem}
+.info-card-title{font-size:.62rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--dimmer);margin-bottom:.6rem}
+.info-row{display:flex;justify-content:space-between;align-items:center;padding:.35rem 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:.76rem}
+.info-row:last-child{border-bottom:none}
+.info-key{color:var(--dim)}
+.info-val{font-weight:600;color:#fff;text-align:right}
+.info-val a{color:#fff;text-decoration:none}
+.info-val a:hover{color:var(--gold)}
+.ein-badge{display:inline-block;background:rgba(255,214,10,.1);border:1px solid rgba(255,214,10,.3);border-radius:8px;padding:.3rem .7rem;font-size:.82rem;font-weight:800;color:rgba(255,214,10,.95);font-variant-numeric:tabular-nums}
+
+/* Social grid */
+.social-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.55rem}
+.social-card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:.85rem 1rem;text-decoration:none;color:var(--text);transition:border-color .15s,background .15s;display:flex;align-items:center;gap:.65rem}
+.social-card:hover{border-color:rgba(255,255,255,.25);background:rgba(255,255,255,.06)}
+.social-icon{font-size:1.2rem;flex-shrink:0}
+.social-info{min-width:0}
+.social-handle{font-size:.8rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.social-platform{font-size:.6rem;color:var(--dim);text-transform:uppercase;letter-spacing:.08em}
+
+/* LLC info */
+.llc-block{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:13px;padding:1.1rem}
+.llc-row{display:flex;align-items:flex-start;gap:.75rem;padding:.5rem 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:.77rem}
+.llc-row:last-child{border-bottom:none}
+.llc-key{color:var(--dim);flex-shrink:0;width:130px}
+.llc-val{color:#fff;font-weight:500;line-height:1.5}
+
+/* Services */
+.svc-chips{display:flex;flex-wrap:wrap;gap:.45rem}
+.svc-chip{font-size:.7rem;font-weight:600;padding:.28rem .7rem;border-radius:980px;background:rgba(255,255,255,.06);border:1px solid var(--border);color:rgba(255,255,255,.75)}
+
+/* Publisher */
+.pub-card{background:rgba(191,90,242,.06);border:1px solid rgba(191,90,242,.2);border-radius:13px;padding:1.1rem}
+</style>
+</head>
+<body>
+<div class="page">
+
+<div class="hero">
+  <div class="hero-label">Moore Money · Business</div>
+  <div class="hero-title">Business Info</div>
+  <div class="hero-sub">MAVTG LLC · Moore Legacy Press · All contact details</div>
+</div>
+
+<!-- CONTACT CARD -->
+<div class="section">
+  <div class="section-label">Contact Card — Save to Phone</div>
+  <div class="contact-card">
+    <div class="contact-name">Michael Moore</div>
+    <div class="contact-title">Founder · MAVTG LLC · Moore Legacy Press</div>
+    <div class="contact-actions">
+      <a class="cta-btn cta-primary" href="/michael.vcf" download="Michael_Moore_MAVTG.vcf">⬇ Save to Contacts</a>
+      <a class="cta-btn cta-secondary" href="tel:+18136667433">📞 Call Business</a>
+      <a class="cta-btn cta-secondary" href="mailto:info@mavtg.com">✉️ Email MAVTG</a>
+    </div>
+    <div class="contact-grid">
+      <div class="contact-row">
+        <span class="contact-label">Legal Name</span>
+        <span class="contact-value">Thurmond Michael Moore</span>
+      </div>
+      <div class="contact-row">
+        <span class="contact-label">Goes By</span>
+        <span class="contact-value">Michael</span>
+      </div>
+      <div class="contact-row">
+        <span class="contact-label">Cell</span>
+        <span class="contact-value"><a href="tel:+19257277877">925-727-7877</a></span>
+      </div>
+      <div class="contact-row">
+        <span class="contact-label">Business Line</span>
+        <span class="contact-value"><a href="tel:+18136667433">813-666-7433</a></span>
+      </div>
+      <div class="contact-row">
+        <span class="contact-label">Personal Email</span>
+        <span class="contact-value"><a href="mailto:1898tm@gmail.com">1898tm@gmail.com</a></span>
+      </div>
+      <div class="contact-row">
+        <span class="contact-label">Business Email</span>
+        <span class="contact-value"><a href="mailto:info@mavtg.com">info@mavtg.com</a></span>
+      </div>
+      <div class="contact-row">
+        <span class="contact-label">Website</span>
+        <span class="contact-value"><a href="https://www.mavtg.com" target="_blank">www.mavtg.com</a></span>
+      </div>
+      <div class="contact-row">
+        <span class="contact-label">Address</span>
+        <span class="contact-value">610 E Zack St, Ste 110-4063<br>Tampa, FL 33602</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- LLC DETAILS -->
+<div class="section">
+  <div class="section-label">MAVTG LLC — Official Details</div>
+  <div class="info-grid">
+    <div class="info-card">
+      <div class="info-card-title">Company Info</div>
+      <div class="info-row"><span class="info-key">Legal name</span><span class="info-val">Medical Adventure Voyage Travel Group, LLC</span></div>
+      <div class="info-row"><span class="info-key">DBA</span><span class="info-val">MAVTG</span></div>
+      <div class="info-row"><span class="info-key">State</span><span class="info-val">Florida Single-Member LLC</span></div>
+      <div class="info-row"><span class="info-key">Sole Member</span><span class="info-val">Michael Moore — 100%</span></div>
+      <div class="info-row"><span class="info-key">Registered Agent</span><span class="info-val">Michael Moore</span></div>
+      <div class="info-row"><span class="info-key">Tax Treatment</span><span class="info-val">Disregarded Entity (Schedule C)</span></div>
+    </div>
+    <div class="info-card">
+      <div class="info-card-title">EIN & Registration</div>
+      <div style="text-align:center;padding:.5rem 0 .75rem">
+        <div style="font-size:.6rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--dimmer);margin-bottom:.4rem">Federal EIN</div>
+        <div class="ein-badge">42-2505575</div>
+      </div>
+      <div class="info-row"><span class="info-key">Address</span><span class="info-val">610 E Zack St<br>Suite 110-4063<br>Tampa, FL 33602</span></div>
+      <div class="info-row"><span class="info-key">Business bank</span><span class="info-val">Grow Financial</span></div>
+      <div class="info-row"><span class="info-key">SSDI SGA limit</span><span class="info-val" style="color:rgba(255,159,10,.9)">$1,690/mo gross max</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- SERVICES -->
+<div class="section">
+  <div class="section-label">What MAVTG Does</div>
+  <div class="info-card" style="border-radius:13px;padding:1.1rem">
+    <div style="font-size:.78rem;color:var(--dim);line-height:1.7;margin-bottom:.85rem">
+      Medical travel facilitation for dialysis patients and medical tourists. Healthcare navigation services.
+      Trip planning around dialysis schedules. Content creation. Kidney advocacy. Publishing (Moore Legacy Press).
+    </div>
+    <div class="svc-chips">
+      <span class="svc-chip">Medical Travel Consulting</span>
+      <span class="svc-chip">Dialysis Cruise Planning</span>
+      <span class="svc-chip">Destination Research</span>
+      <span class="svc-chip">Healthcare Navigation</span>
+      <span class="svc-chip">PICC &amp; Port-Access Gear</span>
+      <span class="svc-chip">Speaking &amp; Advocacy</span>
+      <span class="svc-chip">Content Creation</span>
+      <span class="svc-chip">Book Publishing</span>
+    </div>
+  </div>
+</div>
+
+<!-- SOCIAL MEDIA -->
+<div class="section">
+  <div class="section-label">Social Media — All Handles</div>
+  <div class="social-grid">
+    <a class="social-card" href="https://instagram.com/mavtg" target="_blank">
+      <div class="social-icon">📸</div>
+      <div class="social-info"><div class="social-handle">@mavtg</div><div class="social-platform">Instagram · Main</div></div>
+    </a>
+    <a class="social-card" href="https://instagram.com/mavtghealth" target="_blank">
+      <div class="social-icon">🏥</div>
+      <div class="social-info"><div class="social-handle">@mavtghealth</div><div class="social-platform">Instagram · Health</div></div>
+    </a>
+    <a class="social-card" href="https://instagram.com/mavtgmoney" target="_blank">
+      <div class="social-icon">💰</div>
+      <div class="social-info"><div class="social-handle">@mavtgmoney</div><div class="social-platform">Instagram · Finance</div></div>
+    </a>
+    <a class="social-card" href="https://instagram.com/mavtgai" target="_blank">
+      <div class="social-icon">🤖</div>
+      <div class="social-info"><div class="social-handle">@mavtgai</div><div class="social-platform">Instagram · AI</div></div>
+    </a>
+    <a class="social-card" href="https://tiktok.com/@mavtg" target="_blank">
+      <div class="social-icon">🎵</div>
+      <div class="social-info"><div class="social-handle">@mavtg</div><div class="social-platform">TikTok</div></div>
+    </a>
+    <a class="social-card" href="https://youtube.com/@mavtg" target="_blank">
+      <div class="social-icon">▶️</div>
+      <div class="social-info"><div class="social-handle">@mavtg</div><div class="social-platform">YouTube</div></div>
+    </a>
+    <a class="social-card" href="https://x.com/mavtg" target="_blank">
+      <div class="social-icon">𝕏</div>
+      <div class="social-info"><div class="social-handle">@mavtg</div><div class="social-platform">Twitter / X</div></div>
+    </a>
+    <a class="social-card" href="https://facebook.com/mavtg" target="_blank">
+      <div class="social-icon">📘</div>
+      <div class="social-info"><div class="social-handle">MAVTG</div><div class="social-platform">Facebook</div></div>
+    </a>
+  </div>
+</div>
+
+<!-- BUSINESS DESCRIPTION -->
+<div class="section">
+  <div class="section-label">Official Business Description — Under 250 Words</div>
+  <div class="info-card" style="border-color:rgba(255,214,10,.2);background:rgba(255,214,10,.04)">
+    <div style="font-size:.88rem;line-height:1.85;color:rgba(255,255,255,.85);font-style:italic;padding:.25rem 0">
+      "MAVTG (Medical Adventure Voyage Travel Group, LLC) is a Florida-based medical travel company that specializes in trip planning and healthcare navigation for dialysis patients and chronic illness travelers, eliminating the logistical barriers that prevent patients from experiencing the world by coordinating dialysis access, insurance authorizations, and full travel itineraries around treatment schedules.
+      Founded by Thurmond Michael Moore — a six-year dialysis patient, published author, and kidney disease advocate — MAVTG draws on lived patient experience to provide services that generic travel agencies cannot: verified dialysis center bookings, cruise line medical vetting, destination research reports, and emergency protocol preparation, all built by someone who has navigated every obstacle firsthand.
+      Through its consulting services, Moore Legacy Press publishing imprint, adaptive PICC and port-access clothing line, and patient advocacy and speaking work, MAVTG exists to demonstrate that a life without limits is possible even on dialysis — and to build the infrastructure that makes that life accessible for every patient who deserves it."
+    </div>
+    <div style="font-size:.62rem;color:var(--dimmer);margin-top:.75rem;text-align:right">Word count: ~195 words · Copy freely for bios, grants, pitches, or press kits</div>
+  </div>
+</div>
+
+<!-- LEGAL REGISTRATION -->
+<div class="section">
+  <div class="section-label">Legal Registration & Credentials</div>
+  <div class="info-grid">
+    <div class="info-card">
+      <div class="info-card-title">Federal</div>
+      <div class="info-row"><span class="info-key">EIN</span><span class="info-val" style="color:rgba(255,214,10,.9);font-weight:800">42-2505575</span></div>
+      <div class="info-row"><span class="info-key">Entity type</span><span class="info-val">Single-Member LLC</span></div>
+      <div class="info-row"><span class="info-key">Tax filing</span><span class="info-val">Schedule C · Form 1040</span></div>
+    </div>
+    <div class="info-card">
+      <div class="info-card-title">Florida State</div>
+      <div class="info-row"><span class="info-key">Registered in</span><span class="info-val">State of Florida</span></div>
+      <div class="info-row"><span class="info-key">Sunbiz search</span><span class="info-val"><a href="https://search.sunbiz.org/Inquiry/CorporationSearch/SearchResults?SearchTerm=Medical+Adventure+Voyage+Travel&SearchType=EntityName" target="_blank" style="color:rgba(0,180,255,.9)">Search Sunbiz ↗</a></span></div>
+      <div class="info-row"><span class="info-key">Registered agent</span><span class="info-val">Michael Moore</span></div>
+      <div class="info-row"><span class="info-key">Annual report</span><span class="info-val">Due by May 1 each year</span></div>
+    </div>
+    <div class="info-card">
+      <div class="info-card-title">Dun & Bradstreet</div>
+      <div class="info-row"><span class="info-key">DUNS Number</span><span class="info-val" style="color:rgba(255,159,10,.9)">Not yet registered</span></div>
+      <div class="info-row"><span class="info-key">Action needed</span><span class="info-val">Register free at <a href="https://www.dnb.com/duns-number/get-a-duns.html" target="_blank" style="color:rgba(0,180,255,.9)">dnb.com ↗</a></span></div>
+      <div class="info-row"><span class="info-key">Why it matters</span><span class="info-val">Required for federal contracts, grants, and business credit building</span></div>
+    </div>
+    <div class="info-card">
+      <div class="info-card-title">Licenses & Documents</div>
+      <div class="info-row"><span class="info-key">Operating Agmt</span><span class="info-val"><a href="https://drive.google.com/file/d/1gggVEnpnnM3AyCPDDSmrZqc1nETgXkiG/view" target="_blank" style="color:rgba(0,180,255,.9)">View in Drive ↗</a></span></div>
+      <div class="info-row"><span class="info-key">Operating Agmt (.docx)</span><span class="info-val"><a href="https://drive.google.com/file/d/1ueRNE0XFvikzjlMmH_svlkSqTnCCUNWa/view" target="_blank" style="color:rgba(0,180,255,.9)">View in Drive ↗</a></span></div>
+      <div class="info-row"><span class="info-key">Articles of Inc.</span><span class="info-val">Filed with Florida DOS · On file with state</span></div>
+      <div class="info-row"><span class="info-key">EIN Docs folder</span><span class="info-val"><a href="https://drive.google.com/drive/folders/1l8xEhg7S5WjDdZuJPBY2UqZ1_fXvN-82" target="_blank" style="color:rgba(0,180,255,.9)">Open folder ↗</a></span></div>
+      <div class="info-row"><span class="info-key">Business license</span><span class="info-val">Tampa/Hillsborough — verify if required for consulting</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- MOORE LEGACY PRESS -->
+<div class="section">
+  <div class="section-label">Moore Legacy Press — Publisher</div>
+  <div class="pub-card">
+    <div class="llc-row"><span class="llc-key">Imprint</span><span class="llc-val">Moore Legacy Press, LLC</span></div>
+    <div class="llc-row"><span class="llc-key">Under</span><span class="llc-val">MAVTG LLC</span></div>
+    <div class="llc-row"><span class="llc-key">Address</span><span class="llc-val">610 E Zack St, Suite 110-4063, Tampa, FL 33602</span></div>
+    <div class="llc-row"><span class="llc-key">Website</span><span class="llc-val"><a href="https://www.mavtg.com" target="_blank" style="color:rgba(191,90,242,.9)">www.mavtg.com</a></span></div>
+    <div class="llc-row"><span class="llc-key">Live books</span><span class="llc-val">
+      <a href="https://www.amazon.com/dp/B0GR1ZC6X2" target="_blank" style="color:rgba(191,90,242,.9)">I Missed the Signs</a> ·
+      <a href="https://www.amazon.com/dp/B0FXB17BG7" target="_blank" style="color:rgba(191,90,242,.9)">Big Kidney Journey</a>
+    </span></div>
+    <div class="llc-row"><span class="llc-key">In progress</span><span class="llc-val">When Michael Got Sick · Children's Book</span></div>
+    <div class="llc-row"><span class="llc-key">Languages</span><span class="llc-val">English · Spanish (ES) · Portuguese (PT)</span></div>
+    <div class="llc-row"><span class="llc-key">Mission</span><span class="llc-val">Transforming pain into purpose. Patient-authored books for the chronic illness community.</span></div>
+  </div>
+</div>
+
+<!-- ONLINE PRESENCE -->
+<div class="section">
+  <div class="section-label">Online Presence</div>
+  <div class="info-grid">
+    <div class="info-card">
+      <div class="info-card-title">Websites & Repos</div>
+      <div class="info-row"><span class="info-key">Main site</span><span class="info-val"><a href="https://www.mavtg.com" target="_blank">www.mavtg.com</a></span></div>
+      <div class="info-row"><span class="info-key">Moore Money</span><span class="info-val"><a href="https://mtm-system.vercel.app" target="_blank">mtm-system.vercel.app</a></span></div>
+      <div class="info-row"><span class="info-key">GitHub — MAVTG</span><span class="info-val"><a href="https://github.com/1898tm/mavtg" target="_blank">github.com/1898tm/mavtg</a></span></div>
+      <div class="info-row"><span class="info-key">GitHub — MTM</span><span class="info-val"><a href="https://github.com/1898tm/mtm-system" target="_blank">github.com/1898tm/mtm-system</a></span></div>
+      <div class="info-row"><span class="info-key">Hosting</span><span class="info-val">Vercel · mi-chael-moore-s-projects</span></div>
+    </div>
+    <div class="info-card">
+      <div class="info-card-title">Amazon Author</div>
+      <div class="info-row"><span class="info-key">I Missed the Signs</span><span class="info-val"><a href="https://www.amazon.com/dp/B0GR1ZC6X2" target="_blank">B0GR1ZC6X2</a></span></div>
+      <div class="info-row"><span class="info-key">Big Kidney Journey</span><span class="info-val"><a href="https://www.amazon.com/dp/B0FXB17BG7" target="_blank">B0FXB17BG7</a></span></div>
+      <div class="info-row"><span class="info-key">Platform</span><span class="info-val">Amazon KDP</span></div>
+      <div class="info-row"><span class="info-key">KDP Select</span><span class="info-val">Enrolled</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- IMPORTANT NOTES -->
+<div class="section">
+  <div class="section-label">Important Business Rules</div>
+  <div class="info-card" style="border-color:rgba(255,159,10,.3);background:rgba(255,159,10,.04)">
+    <div class="llc-row"><span class="llc-key" style="color:rgba(255,159,10,.8)">⚠️ SSDI limit</span><span class="llc-val">Keep MAVTG income under <strong>$1,690/mo gross</strong> to protect SSDI. Self-employment hours under 80/mo.</span></div>
+    <div class="llc-row"><span class="llc-key" style="color:rgba(255,69,58,.8)">⚠️ CPA deadline</span><span class="llc-val">June 20, 2026 — external CPA must be engaged. IRS liens active. See Finance OS.</span></div>
+    <div class="llc-row"><span class="llc-key">Tax treatment</span><span class="llc-val">Disregarded entity — MAVTG income reported on Schedule C of your personal Form 1040.</span></div>
+    <div class="llc-row"><span class="llc-key">Business bank</span><span class="llc-val">Grow Financial — keep MAVTG income separate from personal accounts.</span></div>
+    <div class="llc-row"><span class="llc-key">Operating Agmt</span><span class="llc-val">Print, sign, date — keep with business records. Upload to Mercury if opening accounts.</span></div>
+  </div>
+</div>
+
+</div>
+<script src="/jarvis-nav.js"></script>
+</body>
+</html>
