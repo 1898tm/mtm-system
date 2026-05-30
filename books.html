@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Books & Legacy · MTM</title>
+<script src="/jarvis-auth.js"></script>
+<style>
+:root{--gold:#ffd60a;--green:#30d158;--cyan:#0071e3;--purple:#bf5af2;--bg:#000;--panel:rgba(28,28,30,.92);--border:rgba(255,255,255,.09);--text:rgba(255,255,255,.92);--dim:rgba(255,255,255,.38);--font:'SF Pro Display',-apple-system,BlinkMacSystemFont,sans-serif;}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:var(--font);}
+body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear-gradient(rgba(255,255,255,.025)1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025)1px,transparent 1px);background-size:48px 48px;pointer-events:none}
+.page{position:relative;z-index:1;max-width:960px;margin:0 auto;padding:2rem 1rem 6rem;}
+.hero{text-align:center;padding:2.5rem 1rem 1.5rem;}
+.hero-label{font-size:.6rem;font-weight:700;letter-spacing:.22em;color:var(--dim);text-transform:uppercase;margin-bottom:.5rem;}
+.hero-title{font-size:2rem;font-weight:800;letter-spacing:-.04em;background:linear-gradient(145deg,#fff 40%,rgba(191,90,242,.6));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hero-sub{font-size:.78rem;color:var(--dim);margin-top:.5rem;}
+.section-label{font-size:.58rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--dim);margin-bottom:.75rem;display:flex;align-items:center;gap:.5rem;}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border);}
+.section{margin-bottom:1.6rem;}
+.book-card{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:1.4rem;margin-bottom:.75rem;}
+.book-status{font-size:.58rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.2rem .6rem;border-radius:980px;display:inline-block;margin-bottom:.6rem;}
+.status-live{background:rgba(48,209,88,.1);color:rgba(80,220,140,.9);border:1px solid rgba(48,209,88,.3);}
+.status-progress{background:rgba(255,159,10,.1);color:rgba(255,180,60,.9);border:1px solid rgba(255,159,10,.3);}
+.status-planned{background:rgba(255,255,255,.05);color:var(--dim);border:1px solid var(--border);}
+.book-title{font-size:1.1rem;font-weight:700;margin-bottom:.3rem;}
+.book-sub{font-size:.8rem;color:var(--dim);font-style:italic;margin-bottom:.6rem;}
+.book-desc{font-size:.78rem;color:var(--dim);line-height:1.7;}
+.book-links{display:flex;gap:.5rem;margin-top:.85rem;flex-wrap:wrap;}
+.book-link{font-size:.7rem;font-weight:600;padding:.3rem .75rem;border-radius:8px;text-decoration:none;background:rgba(255,255,255,.06);color:rgba(255,255,255,.7);border:1px solid var(--border);}
+.book-link:hover{background:rgba(255,255,255,.12);color:#fff;}
+.book-link.primary{background:rgba(191,90,242,.15);color:rgba(191,90,242,.9);border-color:rgba(191,90,242,.3);}
+.imprint-card{background:rgba(255,214,10,.05);border:1px solid rgba(255,214,10,.15);border-radius:14px;padding:1.1rem;}
+.imprint-title{font-size:.75rem;font-weight:700;color:rgba(255,214,10,.8);margin-bottom:.5rem;letter-spacing:.05em;text-transform:uppercase;}
+.imprint-desc{font-size:.78rem;color:var(--dim);line-height:1.7;}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="hero">
+    <div class="hero-label">MTM · Creative Legacy</div>
+    <div class="hero-title">Books & Legacy</div>
+    <div class="hero-sub">Writing the story while living it — Moore Legacy Press</div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Your Books</div>
+
+    <div class="book-card">
+      <span class="book-status status-live">Live on Amazon</span>
+      <div class="book-title">I Missed the Signs</div>
+      <div class="book-sub">How Kidney Disease Taught Me Faith, Resilience, and Advocacy</div>
+      <div class="book-desc">
+        A memoir about Michael's journey from a 2020 ICU diagnosis with Stage 5 CKD to six years on dialysis,
+        waiting at the top of the Florida transplant list. Written for patients, caregivers, and anyone navigating
+        chronic illness. Published by Moore Legacy Press, Tampa, FL.
+      </div>
+      <div class="book-links">
+        <a class="book-link primary" href="https://www.amazon.com/dp/B0GR1ZC6X2" target="_blank">Amazon Paperback</a>
+        <a class="book-link" href="https://www.amazon.com/dp/B0GR1ZC6X2" target="_blank">Kindle Edition</a>
+      </div>
+    </div>
+
+    <div class="book-card">
+      <span class="book-status status-live">Live on Amazon</span>
+      <div class="book-title">Big Kidney Journey</div>
+      <div class="book-sub">Moore Legacy Press</div>
+      <div class="book-desc">
+        Second published title from Moore Legacy Press. Available on Amazon.
+      </div>
+      <div class="book-links">
+        <a class="book-link primary" href="https://www.amazon.com/dp/B0FXB17BG7" target="_blank">Amazon</a>
+      </div>
+    </div>
+
+    <div class="book-card">
+      <span class="book-status status-progress">In Progress</span>
+      <div class="book-title">When Michael Got Sick</div>
+      <div class="book-sub">A companion title — in progress</div>
+      <div class="book-desc">
+        Companion book currently in development. Documenting the full journey from a different lens.
+      </div>
+    </div>
+
+    <div class="book-card">
+      <span class="book-status status-planned">Planned</span>
+      <div class="book-title">Children's Book</div>
+      <div class="book-sub">For Malcolm — and kids everywhere navigating illness in the family</div>
+      <div class="book-desc">
+        A children's book planned for a future phase. Aimed at helping kids understand kidney disease,
+        dialysis, and strength — through Michael's story told for young readers.
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">The Imprint</div>
+    <div class="imprint-card">
+      <div class="imprint-title">Moore Legacy Press, LLC</div>
+      <div class="imprint-desc">
+        Publisher imprint under MAVTG LLC · Tampa, FL<br>
+        Address: 10 E Zack St, Suite 110-4063, Tampa, FL 33602<br>
+        Website: www.mavtg.com<br><br>
+        Mission: Transforming pain into purpose. Publishing patient-authored books that help others navigate
+        chronic illness, find advocacy, and build legacy.
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Coming Features</div>
+    <div style="background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:1.1rem;">
+      <div style="font-size:.75rem;color:var(--dim);line-height:2;">
+        ○ Manuscript tracker (word count, chapter progress)<br>
+        ○ Amazon sales dashboard<br>
+        ○ Review aggregator (pull Amazon reviews)<br>
+        ○ Speaking engagement tracker (tied to the books)<br>
+        ○ Writing session log<br>
+        ○ Press & media tracker
+      </div>
+    </div>
+  </div>
+</div>
+<script src="/jarvis-nav.js"></script>
+</body>
+</html>

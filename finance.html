@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Finance OS · MTM</title>
+<script src="/jarvis-auth.js"></script>
+<style>
+:root{--gold:#ffd60a;--green:#30d158;--cyan:#0071e3;--red:#ff453a;--bg:#000;--panel:rgba(28,28,30,.92);--border:rgba(255,255,255,.09);--text:rgba(255,255,255,.92);--dim:rgba(255,255,255,.38);--font:'SF Pro Display',-apple-system,BlinkMacSystemFont,sans-serif;}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:var(--font);}
+body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear-gradient(rgba(255,255,255,.025)1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025)1px,transparent 1px);background-size:48px 48px;pointer-events:none}
+.page{position:relative;z-index:1;max-width:960px;margin:0 auto;padding:2rem 1rem 6rem;}
+.hero{text-align:center;padding:2.5rem 1rem 1.5rem;}
+.hero-label{font-size:.6rem;font-weight:700;letter-spacing:.22em;color:var(--dim);text-transform:uppercase;margin-bottom:.5rem;}
+.hero-title{font-size:2rem;font-weight:800;letter-spacing:-.04em;background:linear-gradient(145deg,#fff 40%,rgba(255,214,10,.6));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hero-sub{font-size:.78rem;color:var(--dim);margin-top:.5rem;}
+.section-label{font-size:.58rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--dim);margin-bottom:.75rem;display:flex;align-items:center;gap:.5rem;}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border);}
+.section{margin-bottom:1.6rem;}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:1.25rem;margin-bottom:.75rem;}
+.card-title{font-size:.88rem;font-weight:700;margin-bottom:.4rem;}
+.card-sub{font-size:.75rem;color:var(--dim);line-height:1.6;}
+.platform-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:.75rem;}
+.platform-card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:1.1rem;}
+.plat-name{font-size:.9rem;font-weight:700;margin-bottom:.25rem;}
+.plat-type{font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:.5rem;}
+.plat-note{font-size:.73rem;color:var(--dim);line-height:1.6;}
+.coming-banner{background:rgba(255,214,10,.07);border:1px solid rgba(255,214,10,.2);border-radius:12px;padding:.9rem 1.1rem;text-align:center;font-size:.78rem;color:rgba(255,214,10,.8);margin-bottom:1.5rem;}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="hero">
+    <div class="hero-label">MTM · Finance</div>
+    <div class="hero-title">Finance OS</div>
+    <div class="hero-sub">Building the portfolio while building the brand</div>
+  </div>
+
+  <div class="coming-banner">📈 Full portfolio dashboard coming soon — connect your accounts to track everything in one place</div>
+
+  <div class="section">
+    <div class="section-label">Your Platforms</div>
+    <div class="platform-grid">
+      <div class="platform-card">
+        <div class="plat-type">Brokerage</div>
+        <div class="plat-name">Robinhood</div>
+        <div class="plat-note">Stocks, ETFs, crypto. Mobile-first trading. Good for active positions and quick moves.</div>
+      </div>
+      <div class="platform-card">
+        <div class="plat-type">Full-Service Brokerage</div>
+        <div class="plat-name">Charles Schwab</div>
+        <div class="plat-note">Retirement accounts, research tools, long-term holdings. The serious money account.</div>
+      </div>
+      <div class="platform-card">
+        <div class="plat-type">Active Trading</div>
+        <div class="plat-name">E*Trade</div>
+        <div class="plat-note">Options, advanced orders, Power E*Trade for active trading. Secondary platform.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Financial Pillars</div>
+    <div class="card">
+      <div class="card-title">Strategy: Build While Building</div>
+      <div class="card-sub">
+        The goal is to grow the portfolio in parallel with MAVTG — each business milestone funds the next investment step.
+        Brand growth and portfolio growth reinforce each other.<br><br>
+        <strong style="color:#fff;">Focus areas:</strong> Index funds for stability · Growth stocks for upside · MAVTG brand investments · Real estate (post-transplant goal)
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Budget Rule — $100/mo AI Budget Cap</div>
+      <div class="card-sub">Current AI tools (Claude Code, etc.) capped at $100/month. Track this separately from investment budget.</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Coming Features</div>
+    <div class="card">
+      <div class="card-sub" style="line-height:2;">
+        ○ Portfolio value tracker (pull from each platform)<br>
+        ○ Monthly P&L summary<br>
+        ○ Goal milestone tracker (tied to MAVTG revenue)<br>
+        ○ Budget vs. spend dashboard<br>
+        ○ Dividend tracker<br>
+        ○ Net worth snapshot
+      </div>
+    </div>
+  </div>
+</div>
+<script src="/jarvis-nav.js"></script>
+</body>
+</html>

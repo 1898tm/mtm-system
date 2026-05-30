@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Health OS · MTM</title>
+<script src="/jarvis-auth.js"></script>
+<style>
+:root{--gold:#ffd60a;--green:#30d158;--cyan:#0071e3;--red:#ff453a;--bg:#000;--panel:rgba(28,28,30,.92);--border:rgba(255,255,255,.09);--text:rgba(255,255,255,.92);--dim:rgba(255,255,255,.38);--font:'SF Pro Display',-apple-system,BlinkMacSystemFont,sans-serif;}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:var(--font);}
+body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear-gradient(rgba(255,255,255,.025)1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025)1px,transparent 1px);background-size:48px 48px;pointer-events:none}
+.page{position:relative;z-index:1;max-width:960px;margin:0 auto;padding:2rem 1rem 6rem;}
+.hero{text-align:center;padding:2.5rem 1rem 1.5rem;}
+.hero-label{font-size:.6rem;font-weight:700;letter-spacing:.22em;color:var(--dim);text-transform:uppercase;margin-bottom:.5rem;}
+.hero-title{font-size:2rem;font-weight:800;letter-spacing:-.04em;background:linear-gradient(145deg,#fff 40%,rgba(48,209,88,.6));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hero-sub{font-size:.78rem;color:var(--dim);margin-top:.5rem;}
+.section-label{font-size:.58rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--dim);margin-bottom:.75rem;display:flex;align-items:center;gap:.5rem;}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border);}
+.section{margin-bottom:1.6rem;}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:1.25rem;margin-bottom:.75rem;}
+.card-title{font-size:.88rem;font-weight:700;margin-bottom:.4rem;}
+.card-sub{font-size:.75rem;color:var(--dim);line-height:1.7;}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;}
+@media(max-width:520px){.info-grid{grid-template-columns:1fr;}}
+.info-card{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:12px;padding:.9rem;}
+.info-label{font-size:.58rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin-bottom:.3rem;}
+.info-value{font-size:.85rem;font-weight:500;color:#fff;line-height:1.5;}
+.status-live{background:rgba(48,209,88,.1);border:1px solid rgba(48,209,88,.3);border-radius:12px;padding:.8rem 1rem;display:flex;align-items:center;gap:.75rem;margin-bottom:1.5rem;}
+.status-dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 6px rgba(48,209,88,.6);flex-shrink:0;}
+.status-text{font-size:.78rem;color:rgba(255,255,255,.8);}
+.emergency-card{background:rgba(255,69,58,.06);border:1px solid rgba(255,69,58,.25);border-radius:14px;padding:1.1rem;}
+.emerg-title{font-size:.75rem;font-weight:700;color:rgba(255,100,100,.9);margin-bottom:.6rem;letter-spacing:.05em;text-transform:uppercase;}
+.emerg-item{font-size:.8rem;color:var(--dim);padding:.3rem 0;border-bottom:1px solid rgba(255,255,255,.05);}
+.emerg-item:last-child{border-bottom:none;}
+.emerg-item strong{color:#fff;}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="hero">
+    <div class="hero-label">MTM · Health</div>
+    <div class="hero-title">Health OS</div>
+    <div class="hero-sub">Transplant journey · Dialysis · Faith over fear</div>
+  </div>
+
+  <div class="status-live">
+    <div class="status-dot"></div>
+    <div class="status-text"><strong>Status: Active Dialysis Patient</strong> · Top of Florida transplant list · 6 years on dialysis</div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Your Health Profile</div>
+    <div class="info-grid">
+      <div class="info-card">
+        <div class="info-label">Condition</div>
+        <div class="info-value">Stage 5 CKD<br>End-Stage Renal Disease</div>
+      </div>
+      <div class="info-card">
+        <div class="info-label">Treatment</div>
+        <div class="info-value">Hemodialysis<br>3× per week · 4 hrs/session</div>
+      </div>
+      <div class="info-card">
+        <div class="info-label">Transplant Status</div>
+        <div class="info-value">Top of Florida List<br>Waiting for the call</div>
+      </div>
+      <div class="info-card">
+        <div class="info-label">Diagnosed</div>
+        <div class="info-value">2020 · Age 44<br>ICU — Stage 5 CKD</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Key Contacts</div>
+    <div class="emergency-card">
+      <div class="emerg-title">Emergency & Medical Contacts</div>
+      <div class="emerg-item"><strong>Dr. Reid (Nephrologist)</strong> — 727-828-6370</div>
+      <div class="emerg-item"><strong>DaVita Travel Coordinator</strong> — Frank Prather</div>
+      <div class="emerg-item"><strong>DaVita Travel Auth</strong> — Jenny Lopez Melo (contact 2+ weeks before each destination)</div>
+      <div class="emerg-item"><strong>Emergency contacts</strong> — Family + Dr. Reid + Frank Prather</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Travel Protocol</div>
+    <div class="card">
+      <div class="card-title">Dialysis Travel Checklist</div>
+      <div class="card-sub">
+        ○ Contact Jenny Lopez Melo (DaVita) 2+ weeks before each leg<br>
+        ○ Confirm dialysis center in destination city<br>
+        ○ Get DaVita travel authorization in writing<br>
+        ○ Print medication list (generic names + dosages) — required for customs<br>
+        ○ Pack ALL meds in carry-on — NEVER checked luggage<br>
+        ○ Carry Dr. Reid contact card (laminated)<br>
+        ○ Ensure travel insurance covers dialysis complications<br>
+        ○ Download offline maps for each destination<br>
+        ○ Passport valid 6+ months past return date
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Post-Transplant Goals</div>
+    <div class="card">
+      <div class="card-title">When the Call Comes</div>
+      <div class="card-sub">
+        Full medication re-evaluation with Dr. Reid · Holistic health approach ·
+        Continue MAVTG and travel post-transplant with new freedom ·
+        Malcolm sees his father fight and win · Build the legacy from a place of full health.
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Coming Features</div>
+    <div class="card">
+      <div class="card-sub" style="line-height:2;">
+        ○ Medication tracker with refill reminders<br>
+        ○ Lab value log (creatinine, phosphorus, potassium, etc.)<br>
+        ○ Dialysis session log<br>
+        ○ Dialysis center directory by destination city<br>
+        ○ Transplant timeline tracker<br>
+        ○ Health goals post-transplant
+      </div>
+    </div>
+  </div>
+</div>
+<script src="/jarvis-nav.js"></script>
+</body>
+</html>
