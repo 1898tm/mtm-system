@@ -13,6 +13,7 @@
     { "src": "/health", "dest": "/health.html" },
     { "src": "/books", "dest": "/books.html" },
     { "src": "/business", "dest": "/business.html" },
+    { "src": "/input", "dest": "/input.html" },
     { "src": "/(.*)", "dest": "/$1" }
   ],
   "headers": [

@@ -18,12 +18,12 @@
   document.head.appendChild(style);
 
   var pages = [
-    { icon: '⬡',  label: 'MTM',    href: 'mtm-home.html' },
-    { icon: '👔', label: 'Style',   href: 'style.html'    },
-    { icon: '🧳', label: 'Travel',  href: 'packing.html'  },
-    { icon: '💘', label: 'Dating',  href: 'dating.html'   },
-    { icon: '🔐', label: 'Vault',  href: 'vault.html'   },
-    { icon: '🌍', label: 'MAVTG',  href: 'https://www.mavtg.com', external: true }
+    { icon: '⬡',  label: 'MTM',   href: 'mtm-home.html' },
+    { icon: '📥', label: 'Input',  href: 'input.html'    },
+    { icon: '🔐', label: 'Vault',  href: 'vault.html'    },
+    { icon: '👔', label: 'Style',  href: 'style.html'    },
+    { icon: '💘', label: 'Dating', href: 'dating.html'   },
+    { icon: '🌍', label: 'MAVTG', href: 'https://www.mavtg.com', external: true }
   ];
 
   var current = window.location.pathname.split('/').pop() || 'mtm-home.html';

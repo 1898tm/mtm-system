@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>MTM Input · Moore Money</title>
+<script src="/jarvis-auth.js"></script>
+<style>
+:root{--gold:#ffd60a;--green:#30d158;--cyan:#0071e3;--red:#ff453a;--orange:#ff9f0a;
+  --bg:#000;--panel:rgba(28,28,30,.92);--border:rgba(255,255,255,.09);
+  --text:rgba(255,255,255,.92);--dim:rgba(255,255,255,.38);--dimmer:rgba(255,255,255,.18);
+  --font:'SF Pro Display',-apple-system,BlinkMacSystemFont,sans-serif;}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:var(--font)}
+body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear-gradient(rgba(255,255,255,.025)1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025)1px,transparent 1px);background-size:48px 48px;pointer-events:none}
+.page{position:relative;z-index:1;max-width:860px;margin:0 auto;padding:1.5rem 1rem 6rem}
+.hero{text-align:center;padding:2rem 1rem 1.75rem}
+.hero-label{font-size:.6rem;font-weight:700;letter-spacing:.22em;color:var(--dim);text-transform:uppercase;margin-bottom:.4rem}
+.hero-title{font-size:2rem;font-weight:800;letter-spacing:-.04em;background:linear-gradient(145deg,#fff 40%,rgba(255,214,10,.7));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-sub{font-size:.78rem;color:var(--dim);margin-top:.5rem}
+.section{margin-bottom:1.5rem}
+.section-label{font-size:.58rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--dimmer);margin-bottom:.65rem;display:flex;align-items:center;gap:.5rem}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* Drop Zone */
+.drop-zone{border:2px dashed rgba(255,255,255,.15);border-radius:18px;
+  padding:3rem 2rem;text-align:center;cursor:pointer;transition:all .2s;
+  background:rgba(255,255,255,.02);}
+.drop-zone:hover,.drop-zone.drag-over{border-color:rgba(255,214,10,.5);background:rgba(255,214,10,.04);}
+.drop-icon{font-size:2.5rem;margin-bottom:.75rem}
+.drop-title{font-size:.88rem;font-weight:600;margin-bottom:.35rem}
+.drop-sub{font-size:.72rem;color:var(--dim)}
+.drop-input{display:none}
+
+/* Preview */
+.preview-area{display:none;margin-top:1rem}
+.preview-img{width:100%;max-height:400px;object-fit:contain;border-radius:14px;background:rgba(255,255,255,.04);border:1px solid var(--border);}
+.preview-actions{display:flex;gap:.6rem;margin-top:.85rem;flex-wrap:wrap}
+.preview-clear{background:rgba(255,255,255,.06);border:1px solid var(--border);color:var(--dim);padding:.5rem 1rem;border-radius:10px;font-size:.75rem;font-weight:600;cursor:pointer;font-family:var(--font);transition:all .15s}
+.preview-clear:hover{background:rgba(255,255,255,.12);color:#fff}
+
+/* Palette check */
+.palette-check{background:rgba(255,214,10,.05);border:1px solid rgba(255,214,10,.2);border-radius:14px;padding:1.1rem 1.25rem;margin-top:1rem;display:none}
+.palette-title{font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,214,10,.8);margin-bottom:.65rem}
+.palette-row{display:flex;align-items:center;gap:.6rem;padding:.4rem 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:.78rem;cursor:pointer;user-select:none}
+.palette-row:last-child{border-bottom:none}
+.palette-dot{width:16px;height:16px;border-radius:4px;flex-shrink:0}
+.p-black{background:#1a1a1a;border:1px solid rgba(255,255,255,.2)}
+.p-navy{background:#1b2a4a;border:1px solid rgba(255,255,255,.1)}
+.p-white{background:rgba(255,255,255,.9)}
+.p-stone{background:#8b7355}
+.p-burgundy{background:#6b1527}
+.check-box{width:18px;height:18px;border-radius:5px;border:1px solid rgba(255,255,255,.2);flex-shrink:0;margin-left:auto;display:flex;align-items:center;justify-content:center;font-size:.7rem;transition:all .15s}
+.check-box.checked{background:var(--green);border-color:var(--green)}
+
+/* Text input */
+.text-input-wrap{position:relative}
+.text-input{width:100%;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:14px;padding:1rem 3.5rem 1rem 1.1rem;color:var(--text);font-size:.88rem;font-family:var(--font);outline:none;resize:none;min-height:100px;line-height:1.6;transition:border-color .15s}
+.text-input:focus{border-color:rgba(255,214,10,.4)}
+.text-input::placeholder{color:var(--dimmer)}
+.send-btn{position:absolute;bottom:.75rem;right:.75rem;background:rgba(255,214,10,.15);border:1px solid rgba(255,214,10,.4);border-radius:10px;padding:.45rem .85rem;color:rgba(255,214,10,.9);font-size:.75rem;font-weight:700;cursor:pointer;font-family:var(--font);transition:all .15s}
+.send-btn:hover{background:rgba(255,214,10,.25)}
+
+/* Output */
+.output-area{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:1.1rem 1.25rem;margin-top:.75rem;display:none;font-size:.82rem;color:var(--dim);line-height:1.75}
+.output-area strong{color:#fff}
+
+/* Quick actions */
+.quick-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:.55rem}
+.quick-btn{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:12px;padding:.7rem .9rem;text-align:left;cursor:pointer;font-family:var(--font);transition:all .15s}
+.quick-btn:hover{border-color:rgba(255,255,255,.2);background:rgba(255,255,255,.08)}
+.quick-icon{font-size:1rem;margin-bottom:.3rem}
+.quick-label{font-size:.75rem;font-weight:600;color:#fff;display:block;margin-bottom:.1rem}
+.quick-sub{font-size:.65rem;color:var(--dim);line-height:1.4}
+
+/* History */
+.history-item{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:10px;padding:.7rem .9rem;margin-bottom:.45rem;font-size:.78rem}
+.history-time{font-size:.6rem;color:var(--dimmer);margin-bottom:.2rem}
+.history-text{color:var(--dim);line-height:1.5}
+</style>
+</head>
+<body>
+<div class="page">
+
+<div class="hero">
+  <div class="hero-label">Moore Money · Input</div>
+  <div class="hero-title">Drop. Type. Go.</div>
+  <div class="hero-sub">Drop a photo, type a note, or use quick actions — everything saves here</div>
+</div>
+
+<!-- PHOTO DROP ZONE -->
+<div class="section">
+  <div class="section-label">Photo Drop — Check Against Style System</div>
+  <div class="drop-zone" id="drop-zone" onclick="document.getElementById('file-input').click()">
+    <div class="drop-icon">📸</div>
+    <div class="drop-title">Drop a photo here or tap to upload</div>
+    <div class="drop-sub">Outfit check · Clothing item · Style reference · Bangkok finds</div>
+    <input class="drop-input" type="file" id="file-input" accept="image/*">
+  </div>
+  <div class="preview-area" id="preview-area">
+    <img class="preview-img" id="preview-img" alt="Dropped photo">
+    <div class="preview-actions">
+      <button class="preview-clear" onclick="clearPhoto()">✕ Remove</button>
+      <button class="preview-clear" style="border-color:rgba(255,214,10,.3);color:rgba(255,214,10,.8);" onclick="checkPalette()">Check Palette ↓</button>
+    </div>
+    <div class="palette-check" id="palette-check">
+      <div class="palette-title">5-Color Palette Check — Does it fit?</div>
+      <div class="palette-row" onclick="toggleCheck(this)">
+        <div class="palette-dot p-black"></div>
+        <span>■ Black — suits, dress shoes, accessories</span>
+        <div class="check-box">✓</div>
+      </div>
+      <div class="palette-row" onclick="toggleCheck(this)">
+        <div class="palette-dot p-navy"></div>
+        <span>◆ Navy — suits, shirts, shorts</span>
+        <div class="check-box"></div>
+      </div>
+      <div class="palette-row" onclick="toggleCheck(this)">
+        <div class="palette-dot p-white"></div>
+        <span>○ White — dress shirts, sneakers, linen</span>
+        <div class="check-box"></div>
+      </div>
+      <div class="palette-row" onclick="toggleCheck(this)">
+        <div class="palette-dot p-stone"></div>
+        <span>▲ Stone/Tan — chinos, casual shorts</span>
+        <div class="check-box"></div>
+      </div>
+      <div class="palette-row" onclick="toggleCheck(this)">
+        <div class="palette-dot p-burgundy"></div>
+        <span>● Burgundy — accent only (ascots, lining)</span>
+        <div class="check-box"></div>
+      </div>
+      <div style="margin-top:.75rem;font-size:.72rem;color:var(--dimmer);font-style:italic">
+        Tap the colors that match the item. If none match — leave it at home or Goodwill.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TEXT INPUT -->
+<div class="section">
+  <div class="section-label">Type a Note or Question</div>
+  <div class="text-input-wrap">
+    <textarea class="text-input" id="text-input" placeholder="Type anything — outfit notes, reminders, ideas, questions about your style or travel...&#10;&#10;Examples:&#10;• Remember to ask Rajawongse about the smoking jacket lining&#10;• Check if stone chinos pair with navy blazer&#10;• Note: Bangkok cobbler at Chatuchak Saturday morning"></textarea>
+    <button class="send-btn" onclick="saveNote()">Save ↵</button>
+  </div>
+  <div class="output-area" id="output-area"></div>
+</div>
+
+<!-- QUICK ACTIONS -->
+<div class="section">
+  <div class="section-label">Quick Actions</div>
+  <div class="quick-grid">
+    <button class="quick-btn" onclick="quickAction('style')">
+      <div class="quick-icon">👔</div>
+      <span class="quick-label">Open Style System</span>
+      <span class="quick-sub">Bangkok specs, fragrance, dress codes</span>
+    </button>
+    <button class="quick-btn" onclick="quickAction('packing')">
+      <div class="quick-icon">🧳</div>
+      <span class="quick-label">Open Travel & Packing</span>
+      <span class="quick-sub">Sudoku method, Bangkok checklist</span>
+    </button>
+    <button class="quick-btn" onclick="quickAction('dating')">
+      <div class="quick-icon">💘</div>
+      <span class="quick-label">Open Dating OS</span>
+      <span class="quick-sub">Wishlist, platforms, 80% rule</span>
+    </button>
+    <button class="quick-btn" onclick="quickAction('finance')">
+      <div class="quick-icon">📈</div>
+      <span class="quick-label">Open Finance OS</span>
+      <span class="quick-sub">Bank statements, IRS tracker</span>
+    </button>
+    <button class="quick-btn" onclick="quickAction('vault')">
+      <div class="quick-icon">🔐</div>
+      <span class="quick-label">Open The Vault</span>
+      <span class="quick-sub">Find any document instantly</span>
+    </button>
+    <button class="quick-btn" onclick="quickAction('email')">
+      <div class="quick-icon">✉️</div>
+      <span class="quick-label">Email MAVTG Inbox</span>
+      <span class="quick-sub">Open info@mavtg.com</span>
+    </button>
+  </div>
+</div>
+
+<!-- SAVED NOTES -->
+<div class="section">
+  <div class="section-label">Saved Notes</div>
+  <div id="history-list">
+    <div style="font-size:.78rem;color:var(--dimmer);text-align:center;padding:1.5rem 0">No notes yet — type something above and tap Save</div>
+  </div>
+  <button onclick="clearHistory()" style="width:100%;margin-top:.75rem;padding:.55rem;background:transparent;border:1px solid var(--border);border-radius:10px;color:var(--dimmer);font-size:.7rem;cursor:pointer;font-family:var(--font)">Clear All Notes</button>
+</div>
+
+</div>
+<script src="/jarvis-nav.js"></script>
+<script>
+var NOTES_KEY = 'mtm_input_notes';
+
+// ── Drop Zone ──────────────────────────────────
+var dz = document.getElementById('drop-zone');
+['dragenter','dragover'].forEach(function(e){
+  dz.addEventListener(e, function(ev){ ev.preventDefault(); dz.classList.add('drag-over'); });
+});
+['dragleave','drop'].forEach(function(e){
+  dz.addEventListener(e, function(ev){ ev.preventDefault(); dz.classList.remove('drag-over'); });
+});
+dz.addEventListener('drop', function(ev){
+  var f = ev.dataTransfer.files[0];
+  if (f && f.type.startsWith('image/')) showPhoto(f);
+});
+document.getElementById('file-input').addEventListener('change', function(){
+  if (this.files[0]) showPhoto(this.files[0]);
+});
+
+function showPhoto(file) {
+  var reader = new FileReader();
+  reader.onload = function(e){
+    document.getElementById('preview-img').src = e.target.result;
+    document.getElementById('preview-area').style.display = 'block';
+    document.getElementById('palette-check').style.display = 'none';
+    dz.style.display = 'none';
+  };
+  reader.readAsDataURL(file);
+}
+
+function clearPhoto(){
+  document.getElementById('preview-area').style.display = 'none';
+  document.getElementById('palette-check').style.display = 'none';
+  dz.style.display = 'block';
+  document.getElementById('file-input').value = '';
+}
+
+function checkPalette(){
+  document.getElementById('palette-check').style.display = 'block';
+}
+
+function toggleCheck(row){
+  var box = row.querySelector('.check-box');
+  box.classList.toggle('checked');
+  box.textContent = box.classList.contains('checked') ? '✓' : '';
+}
+
+// ── Text input / Notes ─────────────────────────
+function saveNote(){
+  var txt = document.getElementById('text-input').value.trim();
+  if (!txt) return;
+  var notes = loadNotes();
+  notes.unshift({ text: txt, time: new Date().toLocaleString() });
+  if (notes.length > 50) notes.pop();
+  localStorage.setItem(NOTES_KEY, JSON.stringify(notes));
+  document.getElementById('text-input').value = '';
+  renderHistory();
+  var out = document.getElementById('output-area');
+  out.style.display = 'block';
+  out.innerHTML = '<strong>✓ Saved.</strong> Note stored locally — visible every session.';
+  setTimeout(function(){ out.style.display='none'; }, 2000);
+}
+
+document.getElementById('text-input').addEventListener('keydown', function(e){
+  if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') saveNote();
+});
+
+function loadNotes(){
+  try { return JSON.parse(localStorage.getItem(NOTES_KEY) || '[]'); } catch(e){ return []; }
+}
+
+function renderHistory(){
+  var notes = loadNotes();
+  var el = document.getElementById('history-list');
+  if (!notes.length){
+    el.innerHTML = '<div style="font-size:.78rem;color:var(--dimmer);text-align:center;padding:1.5rem 0">No notes yet — type something above and tap Save</div>';
+    return;
+  }
+  el.innerHTML = notes.map(function(n){
+    return '<div class="history-item"><div class="history-time">'+n.time+'</div><div class="history-text">'+escHtml(n.text)+'</div></div>';
+  }).join('');
+}
+
+function clearHistory(){
+  localStorage.removeItem(NOTES_KEY);
+  renderHistory();
+}
+
+function escHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// ── Quick Actions ──────────────────────────────
+function quickAction(type){
+  var map = {
+    style:'/style.html', packing:'/packing.html', dating:'/dating.html',
+    finance:'/finance.html', vault:'/vault.html', email:'mailto:info@mavtg.com'
+  };
+  var dest = map[type];
+  if (!dest) return;
+  if (dest.startsWith('mailto')) window.location.href = dest;
+  else window.location.href = dest;
+}
+
+renderHistory();
+</script>
+</body>
+</html>
