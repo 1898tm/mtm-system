@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<title>Moore Money</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:#000;color:#fff;
+  font-family:-apple-system,'SF Pro Display',BlinkMacSystemFont,'Segoe UI',sans-serif;
+  -webkit-font-smoothing:antialiased;}
+body::before{content:'';position:fixed;inset:0;z-index:0;
+  background-image:linear-gradient(rgba(255,255,255,.022)1px,transparent 1px),
+  linear-gradient(90deg,rgba(255,255,255,.022)1px,transparent 1px);
+  background-size:48px 48px;pointer-events:none}
+.lock{position:relative;z-index:1;min-height:100vh;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:2rem 1.5rem;}
+.logo{font-size:3.2rem;font-weight:800;letter-spacing:-.06em;
+  background:linear-gradient(145deg,#fff 40%,rgba(255,214,10,.7));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  margin-bottom:.25rem;}
+.system-name{font-size:.6rem;font-weight:700;letter-spacing:.26em;
+  color:rgba(255,255,255,.2);text-transform:uppercase;margin-bottom:2rem;}
+.dots{display:flex;gap:.65rem;margin-bottom:2rem;}
+.dot{width:12px;height:12px;border-radius:50%;
+  background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);
+  transition:all .15s;}
+.dot.filled{background:rgba(255,214,10,.9);border-color:rgba(255,214,10,.6);}
+.dot.error{background:rgba(255,69,58,.9);border-color:rgba(255,69,58,.6);}
+.pin-grid{display:grid;grid-template-columns:repeat(3,72px);gap:.55rem;margin-bottom:1.25rem;}
+.pin-btn{width:72px;height:72px;border-radius:50%;border:1px solid rgba(255,255,255,.12);
+  background:rgba(255,255,255,.06);color:#fff;
+  font-size:1.45rem;font-weight:500;cursor:pointer;
+  font-family:inherit;transition:all .12s;user-select:none;}
+.pin-btn:active,.pin-btn:hover{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.25);}
+.pin-btn.delete{font-size:1.1rem;background:transparent;border-color:transparent;
+  color:rgba(255,255,255,.5);}
+.pin-btn.delete:active,.pin-btn.delete:hover{background:rgba(255,255,255,.08);
+  border-color:rgba(255,255,255,.12);color:#fff;}
+.pin-btn.zero{grid-column:2;}
+.hint{font-size:.68rem;color:rgba(255,255,255,.22);letter-spacing:.04em;margin-top:.75rem;}
+.setup-mode{font-size:.75rem;color:rgba(255,214,10,.6);margin-top:1rem;text-align:center;
+  max-width:260px;line-height:1.6;}
+@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+.dots.shake{animation:shake .35s ease-in-out;}
+</style>
+</head>
+<body>
+<div class="lock">
+  <div class="logo">MTM</div>
+  <div class="system-name">Moore Money</div>
+
+  <div class="dots" id="dots">
+    <div class="dot" id="d0"></div>
+    <div class="dot" id="d1"></div>
+    <div class="dot" id="d2"></div>
+    <div class="dot" id="d3"></div>
+    <div class="dot" id="d4"></div>
+    <div class="dot" id="d5"></div>
+  </div>
+
+  <div class="pin-grid">
+    <button class="pin-btn" onclick="tap('1')">1</button>
+    <button class="pin-btn" onclick="tap('2')">2</button>
+    <button class="pin-btn" onclick="tap('3')">3</button>
+    <button class="pin-btn" onclick="tap('4')">4</button>
+    <button class="pin-btn" onclick="tap('5')">5</button>
+    <button class="pin-btn" onclick="tap('6')">6</button>
+    <button class="pin-btn" onclick="tap('7')">7</button>
+    <button class="pin-btn" onclick="tap('8')">8</button>
+    <button class="pin-btn" onclick="tap('9')">9</button>
+    <button class="pin-btn zero" onclick="tap('0')">0</button>
+    <button class="pin-btn delete" onclick="del()">⌫</button>
+  </div>
+
+  <div class="hint" id="hint">Enter your PIN</div>
+  <div class="setup-mode" id="setup-note" style="display:none"></div>
+</div>
+
+<script>
+var entered = '';
+var MAX = 6;
+var SETUP_KEY = 'mtm_pin_hash';
+var AUTH_KEY = 'mtm_authed';
+var AUTH_VAL = 'mm2026ok';
+var redirect = (new URLSearchParams(location.search).get('r')) || '/mtm-home.html';
+
+// Check if already authed
+if (sessionStorage.getItem(AUTH_KEY) === AUTH_VAL) {
+  location.replace(redirect);
+}
+
+// Setup mode: no PIN set yet
+var isSetup = !localStorage.getItem(SETUP_KEY);
+var setupStep = 0;
+var firstPin = '';
+
+if (isSetup) {
+  document.getElementById('hint').textContent = 'Create your 6-digit PIN';
+  document.getElementById('setup-note').style.display = 'block';
+  document.getElementById('setup-note').textContent = 'You\'re setting up your PIN for the first time. Choose something you\'ll remember.';
+}
+
+async function sha256(str) {
+  var buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+function tap(n) {
+  if (entered.length >= MAX) return;
+  entered += n;
+  updateDots();
+  if (entered.length === MAX) setTimeout(check, 120);
+}
+
+function del() {
+  entered = entered.slice(0,-1);
+  updateDots();
+}
+
+function updateDots() {
+  for (var i=0;i<MAX;i++) {
+    var d = document.getElementById('d'+i);
+    d.className = 'dot' + (i < entered.length ? ' filled' : '');
+  }
+}
+
+async function check() {
+  if (isSetup) {
+    if (setupStep === 0) {
+      firstPin = entered;
+      entered = '';
+      updateDots();
+      document.getElementById('hint').textContent = 'Confirm your PIN';
+      document.getElementById('setup-note').textContent = 'Enter the same PIN again to confirm.';
+      setupStep = 1;
+    } else {
+      if (entered === firstPin) {
+        var h = await sha256(entered);
+        localStorage.setItem(SETUP_KEY, h);
+        sessionStorage.setItem(AUTH_KEY, AUTH_VAL);
+        location.replace(redirect);
+      } else {
+        fail('PINs don\'t match — try again');
+        setupStep = 0;
+        firstPin = '';
+        document.getElementById('hint').textContent = 'Create your 6-digit PIN';
+        document.getElementById('setup-note').textContent = 'Start over — create your PIN.';
+      }
+    }
+  } else {
+    var h = await sha256(entered);
+    var stored = localStorage.getItem(SETUP_KEY);
+    if (h === stored) {
+      sessionStorage.setItem(AUTH_KEY, AUTH_VAL);
+      location.replace(redirect);
+    } else {
+      fail('Incorrect PIN');
+    }
+  }
+}
+
+function fail(msg) {
+  var dots = document.getElementById('dots');
+  for (var i=0;i<MAX;i++) document.getElementById('d'+i).className='dot error';
+  dots.classList.add('shake');
+  document.getElementById('hint').textContent = msg;
+  setTimeout(function(){
+    dots.classList.remove('shake');
+    entered = '';
+    updateDots();
+    document.getElementById('hint').textContent = isSetup ? 'Create your 6-digit PIN' : 'Enter your PIN';
+  }, 700);
+}
+
+// Keyboard support
+document.addEventListener('keydown', function(e) {
+  if (e.key >= '0' && e.key <= '9') tap(e.key);
+  else if (e.key === 'Backspace') del();
+});
+</script>
+</body>
+</html>
