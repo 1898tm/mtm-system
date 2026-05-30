@@ -151,7 +151,14 @@ body::before{content:'';position:fixed;inset:0;z-index:0;
   <div class="voice-ring">🎙</div>
   <div class="voice-status" id="voice-status">Listening…</div>
   <div class="voice-transcript" id="voice-transcript"></div>
-  <div class="voice-commands">Style · Travel · Dating · Health<br>Finance · Books · MAVTG · Home</div>
+  <div class="voice-commands">Say: Style · Travel · Dating · Health · Finance · Books · MAVTG · Home</div>
+  <div style="display:flex;gap:.5rem;width:100%;max-width:300px;">
+    <input id="voice-text" type="text" placeholder="Or type a command…"
+      style="flex:1;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);border-radius:10px;padding:.55rem .85rem;color:#fff;font-size:.82rem;font-family:inherit;outline:none;"
+      onkeydown="if(event.key==='Enter'){processCommand(this.value);this.value='';}">
+    <button onclick="var v=document.getElementById('voice-text');processCommand(v.value);v.value='';"
+      style="background:rgba(255,214,10,.15);border:1px solid rgba(255,214,10,.4);border-radius:10px;padding:.55rem .85rem;color:rgba(255,214,10,.9);font-size:.8rem;cursor:pointer;font-family:inherit;">Go</button>
+  </div>
   <button class="voice-cancel" onclick="stopVoice()">Cancel</button>
 </div>
 
@@ -475,17 +482,31 @@ function initVoice() {
   if (!SpeechRecognition) return null;
   var r = new SpeechRecognition();
   r.lang = 'en-US';
+  r.continuous = true;
   r.interimResults = true;
   r.maxAlternatives = 1;
   r.onresult = function(e) {
     var t = Array.from(e.results).map(function(r){return r[0].transcript}).join('');
     document.getElementById('voice-transcript').textContent = t;
-    if (e.results[e.results.length-1].isFinal) processCommand(t);
+    if (e.results[e.results.length-1].isFinal) {
+      var finalText = e.results[e.results.length-1][0].transcript;
+      processCommand(finalText);
+    }
   };
-  r.onend = function() { if (listening) stopVoice(); };
+  r.onend = function() {
+    if (listening) {
+      // Auto-restart if still listening (browser cut off)
+      try { r.start(); } catch(e) { stopVoice(); }
+    }
+  };
   r.onerror = function(e) {
-    document.getElementById('voice-status').textContent = 'Error: ' + e.error;
-    setTimeout(stopVoice, 1200);
+    if (e.error === 'not-allowed') {
+      document.getElementById('voice-status').textContent = 'Mic blocked — use text box below';
+    } else if (e.error === 'no-speech') {
+      document.getElementById('voice-status').textContent = 'Speak now…';
+    } else {
+      document.getElementById('voice-status').textContent = 'Use text box below ↓';
+    }
   };
   return r;
 }
