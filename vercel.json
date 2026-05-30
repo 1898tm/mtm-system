@@ -1,52 +1,5 @@
 {
-  "version": 2,
-  "routes": [
-    { "src": "/", "dest": "/mtm-home.html" },
-    { "src": "/home", "dest": "/mtm-home.html" },
-    { "src": "/vault", "dest": "/vault.html" },
-    { "src": "/style", "dest": "/style.html" },
-    { "src": "/packing", "dest": "/packing.html" },
-    { "src": "/travel", "dest": "/packing.html" },
-    { "src": "/dating", "dest": "/dating.html" },
-    { "src": "/services", "dest": "/services.html" },
-    { "src": "/finance", "dest": "/finance.html" },
-    { "src": "/health", "dest": "/health.html" },
-    { "src": "/books", "dest": "/books.html" },
-    { "src": "/business", "dest": "/business.html" },
-    { "src": "/input", "dest": "/input.html" },
-    { "src": "/(.*)", "dest": "/$1" }
-  ],
-  "headers": [
-    {
-      "source": "/(.*)",
-      "headers": [
-        { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
-        { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "X-XSS-Protection", "value": "1; mode=block" },
-        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
-        { "key": "Permissions-Policy", "value": "camera=(), microphone=(self), geolocation=(), payment=()" },
-        { "key": "Strict-Transport-Security", "value": "max-age=63072000; includeSubDomains; preload" },
-        { "key": "Content-Security-Policy", "value": "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self' https:; font-src 'self'; frame-ancestors 'self'; media-src 'self' blob:" }
-      ]
-    },
-    {
-      "source": "/jarvis-nav.js",
-      "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=3600, stale-while-revalidate=86400" }
-      ]
-    },
-    {
-      "source": "/jarvis-auth.js",
-      "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=3600, stale-while-revalidate=86400" }
-      ]
-    },
-    {
-      "source": "/michael.vcf",
-      "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=86400" },
-        { "key": "Content-Disposition", "value": "attachment; filename=\"Michael_Moore_MAVTG.vcf\"" }
-      ]
-    }
+  "redirects": [
+    { "source": "/(.*)", "destination": "https://jarvis.mavtg.com", "permanent": true }
   ]
 }
