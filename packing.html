@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<title>Packing — JARVIS</title>
+<script src="jarvis-auth.js"></script>
+<style>
+:root{
+  --cyan:#0071e3;--green:#30d158;--gold:#ffd60a;--red:#ff453a;--purple:#bf5af2;--orange:#ff9f0a;
+  --bg:#000000;--panel:rgba(28,28,30,.95);--border:rgba(255,255,255,.10);
+  --text:rgba(255,255,255,.9);--dim:rgba(255,255,255,.4);
+  --font:'SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:var(--font);}
+body::before{content:'';position:fixed;inset:0;z-index:0;
+  background-image:linear-gradient(rgba(255,255,255,.03)1px,transparent 1px),
+  linear-gradient(90deg,rgba(255,255,255,.03)1px,transparent 1px);
+  background-size:40px 40px;pointer-events:none;}
+
+.topbar{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:.6rem;
+  padding:.65rem 1.2rem;background:rgba(0,0,0,.9);backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);}
+.top-title{font-size:.72rem;font-weight:700;color:var(--gold);letter-spacing:.18em;text-transform:uppercase;flex:1;}
+
+.page{position:relative;z-index:1;max-width:960px;margin:0 auto;padding:1.25rem 1rem 5rem;}
+
+/* Info banner */
+.info-box{background:rgba(0,113,227,.07);border:1px solid rgba(0,113,227,.2);
+  border-radius:12px;padding:.9rem 1.1rem;margin-bottom:1rem;font-size:.78rem;
+  color:rgba(180,220,255,.9);line-height:1.65;}
+.info-box strong{color:#fff;}
+
+/* Section */
+.section{background:var(--panel);border:1px solid var(--border);border-radius:14px;
+  padding:1.25rem;margin-bottom:1rem;}
+.sec-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:.5rem;}
+.sec-title{font-size:.68rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--dim);}
+.sec-action{background:none;border:1px solid var(--border);color:var(--cyan);font-size:.68rem;
+  font-weight:600;padding:.3rem .75rem;border-radius:980px;cursor:pointer;font-family:var(--font);transition:all .2s;}
+.sec-action:hover{background:rgba(0,113,227,.12);border-color:rgba(0,113,227,.4);}
+
+/* Palette swatches — using shapes + labels not just color */
+.palette-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:.6rem;margin-bottom:.5rem;}
+@media(max-width:500px){.palette-grid{grid-template-columns:1fr 1fr;}}
+.swatch{border-radius:10px;padding:.85rem .5rem;text-align:center;border:2px solid rgba(255,255,255,.12);}
+.sw-shape{font-size:1.4rem;margin-bottom:.25rem;}
+.sw-name{font-size:.7rem;font-weight:800;letter-spacing:.04em;}
+.sw-note{font-size:.58rem;color:var(--dim);margin-top:.15rem;line-height:1.3;}
+.sw-black{background:#1a1a1a;}
+.sw-navy{background:#1b2a4a;}
+.sw-white{background:rgba(255,255,255,.12);}
+.sw-stone{background:#4a3e30;}
+.sw-gray{background:#2c2c2e;}
+
+/* Bag diagram */
+.bag-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem;margin-bottom:.5rem;}
+@media(max-width:560px){.bag-grid{grid-template-columns:1fr;}}
+.bag-card{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:12px;padding:1rem;}
+.bag-icon{font-size:1.8rem;margin-bottom:.4rem;}
+.bag-name{font-size:.8rem;font-weight:700;margin-bottom:.15rem;}
+.bag-role{font-size:.65rem;color:var(--cyan);font-weight:600;margin-bottom:.4rem;}
+.bag-items{font-size:.68rem;color:var(--dim);line-height:1.7;}
+.bag-status{font-size:.6rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  padding:.2rem .55rem;border-radius:980px;display:inline-block;margin-top:.4rem;}
+.bag-have{background:rgba(48,209,88,.1);color:var(--green);}
+.bag-buy{background:rgba(255,159,10,.1);color:var(--orange);}
+.bag-thailand{background:rgba(191,90,242,.1);color:var(--purple);}
+
+/* Shoe grid */
+.shoe-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;}
+@media(max-width:480px){.shoe-grid{grid-template-columns:1fr;}}
+.shoe-card{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:12px;padding:.9rem;}
+.shoe-icon{font-size:1.4rem;margin-bottom:.3rem;}
+.shoe-name{font-size:.82rem;font-weight:700;margin-bottom:.15rem;}
+.shoe-color{font-size:.65rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  padding:.15rem .5rem;border-radius:980px;background:rgba(255,255,255,.07);color:var(--dim);display:inline-block;margin-bottom:.3rem;}
+.shoe-use{font-size:.68rem;color:var(--dim);line-height:1.5;}
+.shoe-tip{font-size:.62rem;color:var(--orange);margin-top:.25rem;font-style:italic;}
+
+/* Packing checklist */
+.pack-category{margin-bottom:1rem;}
+.pack-cat-label{font-size:.62rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--dim);margin-bottom:.4rem;padding-bottom:.3rem;border-bottom:1px solid var(--border);}
+.pack-item{display:flex;align-items:flex-start;gap:.6rem;padding:.45rem 0;border-bottom:1px solid rgba(255,255,255,.04);}
+.pack-item:last-child{border-bottom:none;}
+.pack-check{width:20px;height:20px;border-radius:5px;border:2px solid var(--border);flex-shrink:0;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.7rem;
+  margin-top:1px;transition:all .2s;}
+.pack-check.done{background:var(--green);border-color:var(--green);}
+.pack-text{font-size:.8rem;line-height:1.4;}
+.pack-text.done{text-decoration:line-through;color:var(--dim);}
+.pack-note{font-size:.63rem;color:var(--dim);margin-top:.1rem;}
+
+/* Closet / wardrobe items */
+.wardrobe-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.6rem;}
+@media(max-width:480px){.wardrobe-grid{grid-template-columns:1fr;}}
+.wardrobe-card{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:12px;padding:.9rem;position:relative;}
+.w-num{position:absolute;top:.75rem;right:.75rem;width:24px;height:24px;border-radius:50%;
+  background:var(--cyan);color:#fff;font-size:.7rem;font-weight:800;
+  display:flex;align-items:center;justify-content:center;}
+.w-name{font-size:.85rem;font-weight:700;margin-bottom:.15rem;padding-right:28px;}
+.w-type{font-size:.65rem;color:var(--cyan);font-weight:600;margin-bottom:.3rem;}
+.w-meta{font-size:.7rem;color:var(--dim);line-height:1.6;}
+.w-pairs{font-size:.65rem;color:var(--gold);margin-top:.3rem;}
+.w-del{position:absolute;bottom:.6rem;right:.75rem;background:none;border:none;
+  color:var(--dim);font-size:.68rem;cursor:pointer;}
+.w-del:hover{color:var(--red);}
+
+/* Thailand shopping list */
+.shop-item{display:flex;align-items:flex-start;gap:.75rem;padding:.75rem 0;border-bottom:1px solid var(--border);}
+.shop-item:last-child{border-bottom:none;}
+.shop-check{width:22px;height:22px;border-radius:6px;border:2px solid var(--border);flex-shrink:0;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.75rem;transition:all .2s;}
+.shop-check.done{background:var(--purple);border-color:var(--purple);}
+.shop-info{flex:1;}
+.shop-name{font-size:.85rem;font-weight:700;}
+.shop-detail{font-size:.7rem;color:var(--dim);margin-top:.15rem;line-height:1.55;}
+.shop-price{font-size:.75rem;font-weight:700;color:var(--gold);flex-shrink:0;}
+
+/* Add form */
+.add-form{display:none;margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border);}
+.add-form.open{display:block;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:.6rem;}
+@media(max-width:480px){.form-row{grid-template-columns:1fr;}}
+.form-row.single{grid-template-columns:1fr;}
+input.f,select.f,textarea.f{width:100%;background:rgba(255,255,255,.05);border:1px solid var(--border);
+  border-radius:10px;color:var(--text);padding:.7rem .9rem;font-size:.82rem;font-family:var(--font);outline:none;}
+input.f:focus,select.f:focus,textarea.f:focus{border-color:var(--cyan);}
+textarea.f{resize:vertical;min-height:60px;}
+select.f option{background:#1c1c1e;}
+.save-btn{background:var(--gold);color:#000;border:none;border-radius:980px;
+  padding:.65rem 1.4rem;font-size:.8rem;font-weight:800;cursor:pointer;font-family:var(--font);}
+.save-btn:hover{opacity:.88;}
+
+.empty{text-align:center;color:var(--dim);font-size:.78rem;padding:1.25rem 0;}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="top-title">🧳 Packing System</div>
+</div>
+
+<div class="page">
+
+  <div class="info-box">
+    <strong>Your system: The Sudoku Packing Method</strong> applied to a Neutral Capsule Wardrobe.<br>
+    9 items (3 tops + 3 bottoms + 3 layers) = <strong style="color:#fff;">27+ outfit combinations</strong>.
+    Read the grid horizontally, vertically, and diagonally — every direction works.
+    All pieces in your 5-color neutral palette = zero color-matching decisions needed. Perfect for color blindness.
+    <br><br>
+    <strong>2-month SE Asia trip · Most nights professional · Suits + smoking jacket purchased in Thailand</strong>
+  </div>
+
+  <!-- Sudoku Grid -->
+  <div class="section">
+    <div class="sec-header">
+      <div class="sec-title">🔲 Your Sudoku Packing Grid — 9 Items · 27+ Looks</div>
+    </div>
+    <div style="font-size:.72rem;color:var(--dim);margin-bottom:.85rem;line-height:1.6;">
+      Read each row, column, and diagonal — <strong style="color:var(--text);">every combination is a valid outfit.</strong>
+      Horizontal = casual to smart. Vertical = build an outfit by column. Diagonal = unexpected but intentional combos.
+      These 9 items form your travel base. The 2 Thailand suits + smoking jacket add <em>bonus looks</em> on top.
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;margin-bottom:1rem;">
+
+      <!-- Row 1: Top / Bottom / Layer -->
+      <div style="background:rgba(0,113,227,.08);border:1px solid rgba(0,113,227,.25);border-radius:10px;padding:.85rem .75rem;text-align:center;">
+        <div style="font-size:.55rem;font-weight:700;letter-spacing:.1em;color:var(--cyan);text-transform:uppercase;margin-bottom:.35rem;">TOP 1</div>
+        <div style="font-size:.95rem;margin-bottom:.2rem;">👔</div>
+        <div style="font-size:.75rem;font-weight:700;">White Dress Shirt</div>
+        <div style="font-size:.6rem;color:var(--dim);margin-top:.15rem;">○ White · Formal</div>
+      </div>
+      <div style="background:rgba(255,159,10,.07);border:1px solid rgba(255,159,10,.2);border-radius:10px;padding:.85rem .75rem;text-align:center;">
+        <div style="font-size:.55rem;font-weight:700;letter-spacing:.1em;color:var(--orange);text-transform:uppercase;margin-bottom:.35rem;">BOTTOM 1</div>
+        <div style="font-size:.95rem;margin-bottom:.2rem;">👖</div>
+        <div style="font-size:.75rem;font-weight:700;">Stone Chinos</div>
+        <div style="font-size:.6rem;color:var(--dim);margin-top:.15rem;">▲ Stone · Dress or beach</div>
+      </div>
+      <div style="background:rgba(48,209,88,.07);border:1px solid rgba(48,209,88,.2);border-radius:10px;padding:.85rem .75rem;text-align:center;">
+        <div style="font-size:.55rem;font-weight:700;letter-spacing:.1em;color:var(--green);text-transform:uppercase;margin-bottom:.35rem;">LAYER 1</div>
+        <div style="font-size:.95rem;margin-bottom:.2rem;">🧥</div>
+        <div style="font-size:.75rem;font-weight:700;">Navy Blazer</div>
+        <div style="font-size:.6rem;color:var(--dim);margin-top:.15rem;">◆ Navy · Dress up any look</div>
+      </div>
+
+      <!-- Row 2: Layer / Top / Bottom -->
+      <div style="background:rgba(48,209,88,.07);border:1px solid rgba(48,209,88,.2);border-radius:10px;padding:.85rem .75rem;text-align:center;">
+        <div style="font-size:.55rem;font-weight:700;letter-spacing:.1em;color:var(--green);text-transform:uppercase;margin-bottom:.35rem;">LAYER 2</div>
+        <div style="font-size:.95rem;margin-bottom:.2rem;">👕</div>
+        <div style="font-size:.75rem;font-weight:700;">Black Linen Overshirt</div>
+        <div style="font-size:.6rem;color:var(--dim);margin-top:.15rem;">■ Black · Beach-to-bar</div>
+      </div>
+      <div style="background:rgba(0,113,227,.08);border:1px solid rgba(0,113,227,.25);border-radius:10px;padding:.85rem .75rem;text-align:center;">
+        <div style="font-size:.55rem;font-weight:700;letter-spacing:.1em;color:var(--cyan);text-transform:uppercase;margin-bottom:.35rem;">TOP 2</div>
+        <div style="font-size:.95rem;margin-bottom:.2rem;">👘</div>
+        <div style="font-size:.75rem;font-weight:700;">White Linen Shirt</div>
+        <div style="font-size:.6rem;color:var(--dim);margin-top:.15rem;">○ White · Smart casual</div>
+      </div>
+      <div style="background:rgba(255,159,10,.07);border:1px solid rgba(255,159,10,.2);border-radius:10px;padding:.85rem .75rem;text-align:center;">
+        <div style="font-size:.55rem;font-weight:700;letter-spacing:.1em;color:var(--orange);text-transform:uppercase;margin-bottom:.35rem;">BOTTOM 2</div>
+        <div style="font-size:.95rem;margin-bottom:.2rem;">🩲</div>
+        <div style="font-size:.75rem;font-weight:700;">Black Boardshorts</div>
+        <div style="font-size:.6rem;color:var(--dim);margin-top:.15rem;">■ Black · Beach + casual</div>
+      </div>
+
+      <!-- Row 3: Bottom / Layer / Top -->
+      <div style="background:rgba(255,159,10,.07);border:1px solid rgba(255,159,10,.2);border-radius:10px;padding:.85rem .75rem;text-align:center;">
+        <div style="font-size:.55rem;font-weight:700;letter-spacing:.1em;color:var(--orange);text-transform:uppercase;margin-bottom:.35rem;">BOTTOM 3</div>
+        <div style="font-size:.95rem;margin-bottom:.2rem;">👖</div>
+        <div style="font-size:.75rem;font-weight:700;">Black Dress Pants</div>
+        <div style="font-size:.6rem;color:var(--dim);margin-top:.15rem;">■ Black · With suits or solo</div>
+      </div>
+      <div style="background:rgba(48,209,88,.07);border:1px solid rgba(48,209,88,.2);border-radius:10px;padding:.85rem .75rem;text-align:center;">
+        <div style="font-size:.55rem;font-weight:700;letter-spacing:.1em;color:var(--green);text-transform:uppercase;margin-bottom:.35rem;">LAYER 3</div>
+        <div style="font-size:.95rem;margin-bottom:.2rem;">🎩</div>
+        <div style="font-size:.75rem;font-weight:700;">Cigar Smoking Jacket</div>
+        <div style="font-size:.6rem;color:var(--dim);margin-top:.15rem;">◆/■ Navy or Black · Thailand buy</div>
+      </div>
+      <div style="background:rgba(0,113,227,.08);border:1px solid rgba(0,113,227,.25);border-radius:10px;padding:.85rem .75rem;text-align:center;">
+        <div style="font-size:.55rem;font-weight:700;letter-spacing:.1em;color:var(--cyan);text-transform:uppercase;margin-bottom:.35rem;">TOP 3</div>
+        <div style="font-size:.95rem;margin-bottom:.2rem;">👕</div>
+        <div style="font-size:.75rem;font-weight:700;">White/Gray Fitted Tee</div>
+        <div style="font-size:.6rem;color:var(--dim);margin-top:.15rem;">○/▼ White or Gray · Base layer</div>
+      </div>
+
+    </div>
+    <div style="background:rgba(255,215,10,.06);border:1px solid rgba(255,215,10,.15);border-radius:10px;padding:.75rem .9rem;font-size:.72rem;color:var(--dim);line-height:1.65;">
+      ✨ <strong style="color:var(--text);">Bonus looks on top of the 27:</strong> Each of the 2 Thailand suits = 6+ additional outfits (suit jacket as blazer + dress shirt or tee + chinos or dress pants).
+      The smoking jacket as a standalone blazer = 9 more combinations. <strong style="color:var(--gold);">Total potential: 40+ distinct looks from 9 + 3 bonus pieces.</strong>
+    </div>
+  </div>
+
+  <!-- Color Palette -->
+  <div class="section">
+    <div class="sec-header">
+      <div class="sec-title">🎨 Your Color Palette — Buy NOTHING Outside This</div>
+    </div>
+    <div class="palette-grid">
+      <div class="swatch sw-black">
+        <div class="sw-shape">■</div>
+        <div class="sw-name">BLACK</div>
+        <div class="sw-note">Suits, dress shoes, flip flops, belt, accessories</div>
+      </div>
+      <div class="swatch sw-navy">
+        <div class="sw-shape">◆</div>
+        <div class="sw-name">NAVY</div>
+        <div class="sw-note">2nd suit color, shirts, shorts. Darker than black — ask tailor</div>
+      </div>
+      <div class="swatch sw-white">
+        <div class="sw-shape">○</div>
+        <div class="sw-name">WHITE</div>
+        <div class="sw-note">Dress shirts, sneakers, linen shirts, beach</div>
+      </div>
+      <div class="swatch sw-stone">
+        <div class="sw-shape">▲</div>
+        <div class="sw-name">STONE/TAN</div>
+        <div class="sw-note">Chinos, casual shorts. Warm neutral, pairs with all above</div>
+      </div>
+      <div class="swatch sw-gray">
+        <div class="sw-shape">▼</div>
+        <div class="sw-name">GRAY</div>
+        <div class="sw-note">1st suit color (charcoal). T-shirts, casual layer</div>
+      </div>
+    </div>
+    <div style="font-size:.72rem;color:var(--dim);line-height:1.6;margin-top:.5rem;">
+      ▲ <strong style="color:var(--text);">Rule:</strong> If a piece of clothing isn't one of these 5, don't pack it and don't buy it.
+      Your mixed custom shirts from Thailand — photograph them in the Closet section below. If they don't fit this palette, they stay home or go to Goodwill.
+    </div>
+  </div>
+
+  <!-- Bag Strategy -->
+  <div class="section">
+    <div class="sec-header"><div class="sec-title">🎒 Bag Strategy — 3-Bag System</div></div>
+    <div class="bag-grid">
+      <div class="bag-card">
+        <div class="bag-icon">💼</div>
+        <div class="bag-name">Tumi International</div>
+        <div class="bag-role">Carry-On — Always With You</div>
+        <div class="bag-items">
+          Laptop · iPad · chargers · meds · passport + docs ·
+          1 outfit change · toiletries · valuables
+        </div>
+        <span class="bag-status bag-have">✓ You Have This</span>
+      </div>
+      <div class="bag-card">
+        <div class="bag-icon">🎒</div>
+        <div class="bag-name">Duffle + Backpack Straps</div>
+        <div class="bag-role">Main Clothes Bag — Checked or Carried</div>
+        <div class="bag-items">
+          All clothing · shoes (in bags) · beach gear ·
+          laundry bag · packing cubes · extras
+          <br><br>
+          <strong style="color:var(--orange);">Rec: Nomatic 40L or Away Everywhere Bag</strong><br>
+          Both have backpack straps + fits overhead bin
+        </div>
+        <span class="bag-status bag-buy">▲ Buy Before Trip</span>
+      </div>
+      <div class="bag-card">
+        <div class="bag-icon">👔</div>
+        <div class="bag-name">Garment Bag</div>
+        <div class="bag-role">Suits — Bought in Bangkok</div>
+        <div class="bag-items">
+          2 suits + smoking jacket. Tailor in Bangkok
+          provides a garment bag (ask them). Check it
+          on flights. Most airlines: free garment bag check.
+        </div>
+        <span class="bag-status bag-thailand">Buy in Bangkok</span>
+      </div>
+    </div>
+    <div style="font-size:.7rem;color:var(--dim);margin-top:.5rem;line-height:1.6;">
+      💡 <strong style="color:var(--text);">Laundry strategy:</strong> 2-week rotation. Wear → send to hotel laundry ($3–8 in SE Asia).
+      With 7 shirts + 4 bottoms you never run out. No need to pack 60 days of clothes.
+    </div>
+  </div>
+
+  <!-- Shoes -->
+  <div class="section">
+    <div class="sec-header"><div class="sec-title">👟 Shoe System — 3 Pairs Maximum</div></div>
+    <div class="shoe-grid">
+      <div class="shoe-card">
+        <div class="shoe-icon">👟</div>
+        <div class="shoe-name">White Leather Sneakers</div>
+        <div class="shoe-color">■ White / Clean</div>
+        <div class="shoe-use">Daytime, casual dinners, walking. Pairs with everything in the palette. Clean = automatic polish.</div>
+        <div class="shoe-tip">Get them resoled before you leave — white rubber soles last 6+ months of daily wear</div>
+      </div>
+      <div class="shoe-card">
+        <div class="shoe-icon">🥿</div>
+        <div class="shoe-name">Bespoke Black Loafers</div>
+        <div class="shoe-color">■ Black · CUSTOM MADE</div>
+        <div class="shoe-use">Professional dinners, cigar nights, suit events. Made to the exact shape of your foot — no break-in period, unmatched comfort for long days.</div>
+        <div class="shoe-tip">Bangkok custom cobbler: $80–180. Takes 2–3 days. Sukhumvit or Chatuchak market. Last them years. Get measured for 2 pairs.</div>
+      </div>
+      <div class="shoe-card">
+        <div class="shoe-icon">🩴</div>
+        <div class="shoe-name">Black Flip Flops</div>
+        <div class="shoe-color">■ Black</div>
+        <div class="shoe-use">Beach days, dialysis center showers, hotel, pool. Black only — no color conflicts, match both bags and both other shoes.</div>
+        <div class="shoe-tip">Havaianas Brasil in black/black — indestructible, grippy, look clean even worn-in</div>
+      </div>
+    </div>
+    <div style="font-size:.7rem;color:var(--dim);margin-top:.65rem;line-height:1.6;">
+      ▲ <strong style="color:var(--text);">Pack shoes in hotel shower caps or silicone bags</strong> — keeps them from touching clothes.
+      Stuff flip flops inside sneakers to save space. Wear the sneakers on the plane.<br><br>
+      👑 <strong style="color:var(--gold);">Bespoke upgrade:</strong> Travel to Thailand with basic carry shoes, get everything custom-made there.
+      Thai cobblers measure your exact foot last — you'll never want off-the-shelf again. Consider getting 2 pairs of dress shoes (black + stone/tan) since the price is so low.
+    </div>
+  </div>
+
+  <!-- Bespoke Bangkok Guide -->
+  <div class="section">
+    <div class="sec-header">
+      <div class="sec-title">👑 Bespoke Bangkok — Your Custom-Made Guide</div>
+    </div>
+    <div style="font-size:.73rem;color:var(--dim);line-height:1.7;margin-bottom:.85rem;">
+      Bangkok is one of the world's best cities for bespoke everything — suits, shirts, shoes, and leather goods — at a fraction of Western prices.
+      <strong style="color:var(--text);">You get luxury quality, made exactly for your body, at 10–20% of what it would cost in the US.</strong>
+      With dialysis 3× a week, you have time between sessions to do multiple fittings.
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:.6rem;margin-bottom:.85rem;">
+      <div style="background:rgba(255,215,10,.06);border:1px solid rgba(255,215,10,.15);border-radius:12px;padding:1rem;">
+        <div style="font-size:.75rem;font-weight:700;margin-bottom:.4rem;">👔 Suits — 2 Custom</div>
+        <div style="font-size:.68rem;color:var(--dim);line-height:1.6;">
+          <strong style="color:var(--text);">Where:</strong> Sukhumvit Soi 3–11 tailors (Tailor on Ten, Raja's, Marco Tailor)<br>
+          <strong style="color:var(--text);">Colors:</strong> Charcoal gray + Navy only (palette rule)<br>
+          <strong style="color:var(--text);">Fabric:</strong> Ask for wool-silk blend — breathable, drapes beautifully, doesn't wrinkle<br>
+          <strong style="color:var(--text);">Timeline:</strong> 3–5 days (2 fittings minimum — initial + final)<br>
+          <strong style="color:var(--text);">Cost:</strong> $200–$450 each custom. Go mid-range, not cheapest.
+        </div>
+      </div>
+      <div style="background:rgba(191,90,242,.07);border:1px solid rgba(191,90,242,.2);border-radius:12px;padding:1rem;">
+        <div style="font-size:.75rem;font-weight:700;margin-bottom:.4rem;">🎩 Smoking Jacket</div>
+        <div style="font-size:.68rem;color:var(--dim);line-height:1.6;">
+          <strong style="color:var(--text);">Style:</strong> Velvet or heavy brocade. Navy or black (palette only)<br>
+          <strong style="color:var(--text);">Details:</strong> Shawl lapel, satin trim, jetted pockets. This is your statement piece.<br>
+          <strong style="color:var(--text);">Where:</strong> Same tailor as suits (get them to make a matching set)<br>
+          <strong style="color:var(--text);">Pairs with:</strong> White dress shirt + black dress pants or suit trousers<br>
+          <strong style="color:var(--text);">Cost:</strong> $100–$250
+        </div>
+      </div>
+      <div style="background:rgba(0,113,227,.07);border:1px solid rgba(0,113,227,.2);border-radius:12px;padding:1rem;">
+        <div style="font-size:.75rem;font-weight:700;margin-bottom:.4rem;">👟 Bespoke Shoes</div>
+        <div style="font-size:.68rem;color:var(--dim);line-height:1.6;">
+          <strong style="color:var(--text);">Get 2 pairs:</strong> Black penny loafers + Stone/tan monk strap<br>
+          <strong style="color:var(--text);">Why bespoke:</strong> Measured to your exact foot — critical for comfort during dialysis days<br>
+          <strong style="color:var(--text);">Where:</strong> Chatuchak Weekend Market (leather cobblers) or Siam Paragon bespoke<br>
+          <strong style="color:var(--text);">Timeline:</strong> 3–5 days<br>
+          <strong style="color:var(--text);">Cost:</strong> $80–$180 per pair
+        </div>
+      </div>
+      <div style="background:rgba(48,209,88,.07);border:1px solid rgba(48,209,88,.2);border-radius:12px;padding:1rem;">
+        <div style="font-size:.75rem;font-weight:700;margin-bottom:.4rem;">👕 Custom Shirts (select)</div>
+        <div style="font-size:.68rem;color:var(--dim);line-height:1.6;">
+          <strong style="color:var(--text);">Only get new ones if:</strong> Current custom shirts fall outside the neutral palette<br>
+          <strong style="color:var(--text);">Get:</strong> 3–4 white cotton dress shirts (your workhorse), 2 white linen for casual<br>
+          <strong style="color:var(--text);">Details:</strong> Spread collar, French cuffs if you want cufflinks. No patterns.<br>
+          <strong style="color:var(--text);">Where:</strong> Same tailor as suits for consistency<br>
+          <strong style="color:var(--text);">Cost:</strong> $30–$80 each custom
+        </div>
+      </div>
+    </div>
+    <div style="background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:10px;padding:.75rem .9rem;font-size:.7rem;color:var(--dim);line-height:1.65;">
+      💡 <strong style="color:var(--text);">Fitting day strategy:</strong> Schedule fittings on dialysis days (you're in the area, you have recovery time).
+      First visit = measurements + fabric selection. Day 3 = initial fitting. Day 5 = final pickup.
+      Always go mid-range with tailors — the cheapest options cut corners on lining, canvas, and thread quality.
+    </div>
+  </div>
+
+  <!-- Thailand Shopping Checklist -->
+  <div class="section">
+    <div class="sec-header">
+      <div class="sec-title">🇹🇭 Thailand Shopping Checklist</div>
+    </div>
+    <div id="shop-list"></div>
+  </div>
+
+  <!-- Master Packing List -->
+  <div class="section">
+    <div class="sec-header">
+      <div class="sec-title">✅ Master Packing List</div>
+      <button class="sec-action" onclick="resetPacking()">Reset All</button>
+    </div>
+    <div id="pack-list"></div>
+  </div>
+
+  <!-- My Closet / Wardrobe Inventory -->
+  <div class="section">
+    <div class="sec-header">
+      <div class="sec-title">👕 My Closet — What's Making the Trip</div>
+      <button class="sec-action" onclick="toggleForm('wardrobe-form')">+ Add Item</button>
+    </div>
+    <div style="font-size:.72rem;color:var(--dim);line-height:1.6;margin-bottom:.85rem;background:rgba(255,215,10,.05);border:1px solid rgba(255,215,10,.15);border-radius:8px;padding:.65rem .85rem;">
+      📸 <strong style="color:var(--text);">Closet photo tip:</strong> Open this page, tap "+ Add Item," and describe each piece.
+      Each item gets a number. You'll know exactly what pairs with what without having to see colors.
+    </div>
+    <div class="wardrobe-grid" id="wardrobe-grid"></div>
+    <div class="add-form" id="wardrobe-form">
+      <div class="form-row">
+        <input class="f" id="wf-name" placeholder="Item name (e.g. White linen shirt)">
+        <select class="f" id="wf-type">
+          <option value="shirt">Dress Shirt</option>
+          <option value="linen">Linen / Casual Shirt</option>
+          <option value="tshirt">T-Shirt</option>
+          <option value="pants">Dress Pants / Chinos</option>
+          <option value="shorts">Shorts</option>
+          <option value="jacket">Jacket / Blazer</option>
+          <option value="suit">Suit</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <select class="f" id="wf-palette">
+          <option value="black">■ Black</option>
+          <option value="navy">◆ Navy</option>
+          <option value="white">○ White</option>
+          <option value="stone">▲ Stone / Tan</option>
+          <option value="gray">▼ Gray / Charcoal</option>
+          <option value="mixed">⚠ Mixed / Pattern (review before packing)</option>
+        </select>
+        <select class="f" id="wf-pack">
+          <option value="yes">✓ Packing this</option>
+          <option value="maybe">? Maybe — deciding</option>
+          <option value="no">✕ Leaving behind</option>
+          <option value="goodwill">♻ Goodwill / donate</option>
+        </select>
+      </div>
+      <div class="form-row single">
+        <input class="f" id="wf-desc" placeholder="Description (texture, pattern, occasion — e.g. Fine cotton, subtle stripe, business dinner)">
+      </div>
+      <div class="form-row single">
+        <input class="f" id="wf-pairs" placeholder="Pairs with item #s (e.g. pairs with #3 pants and #7 jacket)">
+      </div>
+      <button class="save-btn" onclick="saveWardrobeItem()">Save Item</button>
+    </div>
+  </div>
+
+</div>
+
+<script src="jarvis-nav.js"></script>
+<script>
+(function() {
+  var KEYS = {
+    packing:   'jarvis_packing_list',
+    wardrobe:  'jarvis_packing_wardrobe',
+    shopping:  'jarvis_packing_shopping'
+  };
+
+  var DEFAULT_SHOPPING = [
+    { id:'sh1', name:'Suit #1 — Charcoal Gray', detail:'Slim fit, 2-button. Versatile: business, wedding, upscale dinner. Tell tailor: "slim European cut, peak or notch lapel." Budget: $150–350 custom.', price:'$150–350', done:false },
+    { id:'sh2', name:'Suit #2 — Navy', detail:'Navy is the most versatile suit color in the world. Works in any country, any industry. Same cut as #1. Pairs with white or light blue shirt.', price:'$150–350', done:false },
+    { id:'sh3', name:'Cigar Smoking Jacket', detail:'Velvet or brocade. Navy or Black ONLY (sticks to palette). Can sub for a blazer at casual professional events. Find at Jim Thompson or a bespoke tailor in Bangkok.', price:'$80–200', done:false },
+    { id:'sh4', name:'Bespoke Black Penny Loafers', detail:'Have your foot measured and a last made. Thai cobbler — Chatuchak or Siam Paragon. Comfort is everything when you\'re doing dialysis days on your feet. Takes 3–5 days.', price:'$80–180', done:false },
+    { id:'sh4b', name:'Bespoke Stone/Tan Monk Strap', detail:'Second pair of dress shoes in stone/tan — pairs with chinos and the lighter suit. Same cobbler as the black loafers, same last, even more comfortable.', price:'$80–180', done:false },
+    { id:'sh5', name:'Garment bag for suits', detail:'Ask the tailor — they usually provide one free. If not, buy at any department store in Bangkok (Central, EmQuartier). Hang-capable for hotel closets.', price:'Free–$30', done:false },
+    { id:'sh6', name:'Linen shirts (optional)', detail:'Only if current custom shirts don\'t fit the palette. White or stone linen only. Thai linen shirts are $20–40 and breathable for the heat.', price:'$20–40', done:false }
+  ];
+
+  var DEFAULT_PACKING = [
+    // Clothes
+    { id:'pk1', cat:'Clothes', text:'White dress shirts', note:'2–3 max. Everything else goes to hotel laundry', done:false },
+    { id:'pk2', cat:'Clothes', text:'Stone or gray chinos/dress pants', note:'1–2 pairs. Wear one, wash one', done:false },
+    { id:'pk3', cat:'Clothes', text:'Black or navy casual shorts', note:'2 pairs — beach + casual days', done:false },
+    { id:'pk4', cat:'Clothes', text:'White or gray t-shirts', note:'3–4 for beach and layering under shirts', done:false },
+    { id:'pk5', cat:'Clothes', text:'Swimsuit/boardshorts — black or navy', note:'1 pair, quick-dry fabric', done:false },
+    { id:'pk6', cat:'Clothes', text:'Lightweight jacket or blazer', note:'Black or navy. Airport, AC restaurants, cool evenings', done:false },
+    { id:'pk7', cat:'Clothes', text:'Belt — black leather', note:'Matches all shoes and all suit colors', done:false },
+    { id:'pk8', cat:'Clothes', text:'Dress socks — black', note:'5 pairs. Black pairs with both suits', done:false },
+    { id:'pk9', cat:'Clothes', text:'No-show socks (for sneakers)', note:'4–5 pairs', done:false },
+    { id:'pk10', cat:'Clothes', text:'Underwear', note:'7 pairs. Merino wool dries fast and doesn\'t smell', done:false },
+    { id:'pk11', cat:'Clothes', text:'4 packing cubes (compression)', note:'Shirts / Pants / Underwear+socks / Misc', done:false },
+    // Shoes
+    { id:'pk12', cat:'Shoes', text:'White leather sneakers', note:'Wear on plane to save bag space', done:false },
+    { id:'pk13', cat:'Shoes', text:'Black leather loafers', note:'Pack in a shoe bag — sole to sole', done:false },
+    { id:'pk14', cat:'Shoes', text:'Black Havaianas flip flops', note:'Stuff inside sneakers when packing', done:false },
+    // Electronics
+    { id:'pk15', cat:'Electronics', text:'Laptop + laptop charger', note:'In Tumi carry-on always', done:false },
+    { id:'pk16', cat:'Electronics', text:'iPad + iPad charger / Apple Pencil', note:'In Tumi carry-on always', done:false },
+    { id:'pk17', cat:'Electronics', text:'Universal travel adapter', note:'SE Asia uses Type A, B, C — get a universal one', done:false },
+    { id:'pk18', cat:'Electronics', text:'Portable power bank (20,000 mAh)', note:'For long travel days and dialysis center waits', done:false },
+    { id:'pk19', cat:'Electronics', text:'Headphones', note:'Noise-cancelling for flights', done:false },
+    { id:'pk20', cat:'Electronics', text:'Phone + charging cable', note:'Download Google Maps offline for each country', done:false },
+    // Medical
+    { id:'pk21', cat:'Medical', text:'Full medication list — printed + digital', note:'Generic names + dosages. Required for customs', done:false },
+    { id:'pk22', cat:'Medical', text:'All medications (full trip + 3 week buffer)', note:'Pack meds in carry-on — never checked luggage', done:false },
+    { id:'pk23', cat:'Medical', text:'Insurance cards + pre-authorization docs', note:'DaVita travel auth confirmation printed', done:false },
+    { id:'pk24', cat:'Medical', text:'Dr. Reid contact card', note:'727-828-6370. Laminate one physical card', done:false },
+    { id:'pk25', cat:'Medical', text:'Emergency contact card', note:'Family + Dr. Reid + Frank Prather (DaVita)', done:false },
+    // Documents
+    { id:'pk26', cat:'Documents', text:'Passport (valid 6+ months past return date)', note:'SE Asia requires 6 months validity. Check now.', done:false },
+    { id:'pk27', cat:'Documents', text:'Visa confirmations (printed + phone)', note:'Thailand 30-day visa on arrival (US passport). Others vary.', done:false },
+    { id:'pk28', cat:'Documents', text:'Travel insurance documents', note:'Must cover dialysis complications', done:false },
+    { id:'pk29', cat:'Documents', text:'Hotel + dialysis center confirmations', note:'First 2 weeks pre-booked minimum', done:false },
+    { id:'pk30', cat:'Documents', text:'DaVita travel authorizations (all countries)', note:'Contact Jenny Lopez Melo 2+ weeks before each leg', done:false },
+    // Toiletries
+    { id:'pk31', cat:'Toiletries', text:'Toiletries (travel size for carry-on)', note:'Buy anything bulky once you arrive — much cheaper in SE Asia', done:false },
+    { id:'pk32', cat:'Toiletries', text:'Sunscreen SPF 50+', note:'Beach days. Buy locally — Thai sunscreen is excellent and cheap', done:false },
+    { id:'pk33', cat:'Toiletries', text:'Insect repellent', note:'Dengue and malaria risk in some SE Asia regions', done:false }
+  ];
+
+  function load(key, def) {
+    try { return JSON.parse(localStorage.getItem(key)) || def; } catch(e) { return def; }
+  }
+  function save(key, val) {
+    try { localStorage.setItem(key, JSON.stringify(val)); } catch(e) {} }
+  function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
+
+  window.toggleForm = function(id) { document.getElementById(id).classList.toggle('open'); };
+
+  // Shopping list
+  function renderShopping() {
+    var items = load(KEYS.shopping, DEFAULT_SHOPPING);
+    var list = document.getElementById('shop-list');
+    list.innerHTML = items.map(function(s) {
+      return '<div class="shop-item">' +
+        '<div class="shop-check ' + (s.done?'done':'') + '" onclick="toggleShop(\'' + s.id + '\')">' +
+          (s.done?'✓':'') +
+        '</div>' +
+        '<div class="shop-info">' +
+          '<div class="shop-name">' + s.name + '</div>' +
+          '<div class="shop-detail">' + s.detail + '</div>' +
+        '</div>' +
+        '<div class="shop-price">' + s.price + '</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  window.toggleShop = function(id) {
+    var items = load(KEYS.shopping, DEFAULT_SHOPPING).map(function(s){
+      return s.id===id ? Object.assign({},s,{done:!s.done}) : s;
+    });
+    save(KEYS.shopping, items);
+    renderShopping();
+  };
+
+  // Packing checklist
+  function renderPacking() {
+    var items = load(KEYS.packing, DEFAULT_PACKING);
+    var cats = {};
+    items.forEach(function(i){ if(!cats[i.cat]) cats[i.cat]=[]; cats[i.cat].push(i); });
+    var list = document.getElementById('pack-list');
+    list.innerHTML = Object.keys(cats).map(function(cat) {
+      return '<div class="pack-category">' +
+        '<div class="pack-cat-label">' + cat + '</div>' +
+        cats[cat].map(function(i) {
+          return '<div class="pack-item">' +
+            '<div class="pack-check ' + (i.done?'done':'') + '" onclick="togglePack(\'' + i.id + '\')">' +
+              (i.done?'✓':'') +
+            '</div>' +
+            '<div>' +
+              '<div class="pack-text ' + (i.done?'done':'') + '">' + i.text + '</div>' +
+              (i.note ? '<div class="pack-note">' + i.note + '</div>' : '') +
+            '</div>' +
+          '</div>';
+        }).join('') +
+      '</div>';
+    }).join('');
+  }
+
+  window.togglePack = function(id) {
+    var items = load(KEYS.packing, DEFAULT_PACKING).map(function(i){
+      return i.id===id ? Object.assign({},i,{done:!i.done}) : i;
+    });
+    save(KEYS.packing, items);
+    renderPacking();
+  };
+
+  window.resetPacking = function() {
+    var items = load(KEYS.packing, DEFAULT_PACKING).map(function(i){ return Object.assign({},i,{done:false}); });
+    save(KEYS.packing, items);
+    renderPacking();
+  };
+
+  // Wardrobe
+  var TYPE_LABELS = { shirt:'Dress Shirt', linen:'Linen / Casual Shirt', tshirt:'T-Shirt',
+    pants:'Dress Pants / Chinos', shorts:'Shorts', jacket:'Jacket / Blazer', suit:'Suit', other:'Other' };
+  var PALETTE_LABELS = { black:'■ Black', navy:'◆ Navy', white:'○ White',
+    stone:'▲ Stone / Tan', gray:'▼ Gray', mixed:'⚠ Mixed / Pattern' };
+  var PACK_LABELS = { yes:'✓ Packing', maybe:'? Deciding', no:'✕ Leaving', goodwill:'♻ Donate' };
+  var PACK_COLORS = { yes:'var(--green)', maybe:'var(--orange)', no:'var(--dim)', goodwill:'var(--purple)' };
+
+  function renderWardrobe() {
+    var items = load(KEYS.wardrobe, []);
+    var grid = document.getElementById('wardrobe-grid');
+    if (!items.length) {
+      grid.innerHTML = '<div class="empty" style="grid-column:1/-1">No items yet. Add your clothes one by one so you can plan the trip. Each item gets a number so you can pair outfits without worrying about color.</div>';
+      return;
+    }
+    grid.innerHTML = items.map(function(w, idx) {
+      return '<div class="wardrobe-card">' +
+        '<div class="w-num">' + (idx+1) + '</div>' +
+        '<div class="w-name">' + w.name + '</div>' +
+        '<div class="w-type">' + (TYPE_LABELS[w.type]||w.type) + ' · ' + (PALETTE_LABELS[w.palette]||w.palette) + '</div>' +
+        '<div class="w-meta">' + (w.desc||'') + '</div>' +
+        (w.pairs ? '<div class="w-pairs">🔗 Pairs with: ' + w.pairs + '</div>' : '') +
+        '<div style="margin-top:.4rem;">' +
+          '<span style="font-size:.62rem;font-weight:700;color:' + (PACK_COLORS[w.pack]||'var(--dim)') + ';">' +
+            (PACK_LABELS[w.pack]||w.pack) + '</span>' +
+        '</div>' +
+        '<button class="w-del" onclick="deleteWardrobe(\'' + w.id + '\')">✕</button>' +
+      '</div>';
+    }).join('');
+  }
+
+  window.saveWardrobeItem = function() {
+    var name = document.getElementById('wf-name').value.trim();
+    if (!name) return;
+    var items = load(KEYS.wardrobe, []);
+    items.push({
+      id:      uid(),
+      name:    name,
+      type:    document.getElementById('wf-type').value,
+      palette: document.getElementById('wf-palette').value,
+      pack:    document.getElementById('wf-pack').value,
+      desc:    document.getElementById('wf-desc').value.trim(),
+      pairs:   document.getElementById('wf-pairs').value.trim()
+    });
+    save(KEYS.wardrobe, items);
+    document.getElementById('wardrobe-form').classList.remove('open');
+    ['wf-name','wf-desc','wf-pairs'].forEach(function(id){ document.getElementById(id).value=''; });
+    renderWardrobe();
+  };
+
+  window.deleteWardrobe = function(id) {
+    var items = load(KEYS.wardrobe, []).filter(function(w){ return w.id!==id; });
+    save(KEYS.wardrobe, items);
+    renderWardrobe();
+  };
+
+  // Seed
+  if (!localStorage.getItem(KEYS.packing))  save(KEYS.packing, DEFAULT_PACKING);
+  if (!localStorage.getItem(KEYS.shopping)) save(KEYS.shopping, DEFAULT_SHOPPING);
+
+  renderShopping();
+  renderPacking();
+  renderWardrobe();
+})();
+</script>
+</body>
+</html>

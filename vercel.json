@@ -1,0 +1,35 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "**/*.html",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/",
+      "dest": "/mtm-home.html"
+    },
+    {
+      "src": "/home",
+      "dest": "/mtm-home.html"
+    },
+    {
+      "src": "/style",
+      "dest": "/style.html"
+    },
+    {
+      "src": "/packing",
+      "dest": "/packing.html"
+    },
+    {
+      "src": "/dating",
+      "dest": "/dating.html"
+    },
+    {
+      "src": "/services",
+      "dest": "/services.html"
+    }
+  ]
+}

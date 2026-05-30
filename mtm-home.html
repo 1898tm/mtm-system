@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<title>MTM — Michael T. Moore</title>
+<style>
+:root{
+  --gold:#ffd60a;--cyan:#0071e3;--green:#30d158;--red:#ff453a;--purple:#bf5af2;--orange:#ff9f0a;--burgundy:#8b1a2f;
+  --bg:#000;--panel:rgba(28,28,30,.92);--border:rgba(255,255,255,.09);
+  --text:rgba(255,255,255,.92);--dim:rgba(255,255,255,.38);--dimmer:rgba(255,255,255,.18);
+  --font:'SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:var(--font)}
+
+/* Grid background */
+body::before{content:'';position:fixed;inset:0;z-index:0;
+  background-image:linear-gradient(rgba(255,255,255,.025)1px,transparent 1px),
+  linear-gradient(90deg,rgba(255,255,255,.025)1px,transparent 1px);
+  background-size:48px 48px;pointer-events:none}
+
+/* Hero */
+.hero{position:relative;z-index:1;text-align:center;padding:3.5rem 1.2rem 2rem}
+.hero-monogram{font-size:4.5rem;font-weight:800;letter-spacing:-.06em;
+  background:linear-gradient(145deg,#fff 40%,rgba(255,214,10,.7));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  line-height:1;margin-bottom:.3rem}
+.hero-name{font-size:.75rem;font-weight:700;letter-spacing:.28em;color:var(--dim);text-transform:uppercase;margin-bottom:.6rem}
+.hero-motto{display:inline-flex;align-items:center;gap:.5rem;
+  font-size:.65rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase;
+  color:rgba(255,214,10,.7);border:1px solid rgba(255,214,10,.22);
+  padding:.32rem .9rem;border-radius:980px;background:rgba(255,214,10,.04)}
+.hero-date{font-size:.72rem;color:var(--dimmer);margin-top:1rem;letter-spacing:.04em}
+
+/* Section */
+.page{position:relative;z-index:1;max-width:960px;margin:0 auto;padding:0 1rem 6rem}
+.section{margin-bottom:1.6rem}
+.section-label{font-size:.58rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--dimmer);margin-bottom:.75rem;display:flex;align-items:center;gap:.5rem}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* Module grid */
+.module-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:.75rem}
+.module-card{background:var(--panel);border:1px solid var(--border);border-radius:16px;
+  padding:1.25rem;text-decoration:none;color:var(--text);
+  transition:border-color .2s,transform .15s;cursor:pointer;display:block}
+.module-card:hover{border-color:rgba(255,255,255,.2);transform:translateY(-1px)}
+.module-card.active{border-color:rgba(255,214,10,.3);background:rgba(255,214,10,.04)}
+.mod-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:.65rem}
+.mod-icon{font-size:1.5rem}
+.mod-badge{font-size:.55rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  padding:.2rem .55rem;border-radius:980px;border:1px solid}
+.badge-live{color:rgba(48,209,88,.9);border-color:rgba(48,209,88,.35);background:rgba(48,209,88,.08)}
+.badge-building{color:rgba(255,159,10,.9);border-color:rgba(255,159,10,.35);background:rgba(255,159,10,.07)}
+.badge-soon{color:rgba(255,255,255,.35);border-color:rgba(255,255,255,.12);background:transparent}
+.mod-name{font-size:.9rem;font-weight:700;margin-bottom:.25rem}
+.mod-sub{font-size:.7rem;color:var(--dim);line-height:1.5;margin-bottom:.75rem}
+.mod-stats{display:flex;gap:.5rem;flex-wrap:wrap}
+.mod-stat{font-size:.6rem;font-weight:600;letter-spacing:.06em;
+  color:var(--dimmer);background:rgba(255,255,255,.05);
+  padding:.18rem .5rem;border-radius:6px}
+
+/* Life pillars */
+.pillars{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:.6rem}
+.pillar{background:rgba(255,255,255,.03);border:1px solid var(--border);
+  border-radius:12px;padding:.85rem .75rem;text-align:center}
+.pillar-icon{font-size:1.3rem;margin-bottom:.35rem}
+.pillar-name{font-size:.72rem;font-weight:700;margin-bottom:.2rem}
+.pillar-note{font-size:.6rem;color:var(--dim);line-height:1.45}
+
+/* Quick ref */
+.quick-grid{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
+@media(max-width:520px){.quick-grid{grid-template-columns:1fr}}
+.quick-card{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:12px;padding:.9rem 1rem}
+.quick-label{font-size:.58rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--dimmer);margin-bottom:.45rem}
+.quick-item{font-size:.72rem;color:var(--dim);padding:.22rem 0;border-bottom:1px solid rgba(255,255,255,.04);
+  display:flex;justify-content:space-between;align-items:center;gap:.5rem}
+.quick-item:last-child{border-bottom:none}
+.quick-item strong{color:var(--text);font-weight:500}
+.quick-item code{font-size:.65rem;color:rgba(0,113,227,.9);background:rgba(0,113,227,.1);
+  padding:.1rem .4rem;border-radius:4px;font-family:monospace}
+
+/* Status bar */
+.status-bar{background:rgba(255,214,10,.07);border:1px solid rgba(255,214,10,.18);
+  border-radius:12px;padding:.8rem 1rem;display:flex;align-items:center;gap:.75rem;margin-bottom:1.6rem}
+.status-dot{width:7px;height:7px;border-radius:50%;background:var(--green);flex-shrink:0;
+  box-shadow:0 0 6px rgba(48,209,88,.6)}
+.status-text{font-size:.75rem;color:rgba(255,255,255,.7);flex:1}
+.status-text strong{color:#fff}
+.status-time{font-size:.62rem;color:var(--dimmer)}
+
+/* Automated system badges */
+.automation-row{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.7rem}
+.auto-badge{font-size:.6rem;font-weight:600;padding:.22rem .65rem;border-radius:980px;
+  background:rgba(0,113,227,.1);border:1px solid rgba(0,113,227,.25);color:rgba(100,180,255,.9)}
+
+/* Bottom nav */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:100;
+  background:rgba(0,0,0,.92);backdrop-filter:blur(20px);
+  border-top:1px solid var(--border);
+  display:flex;justify-content:space-around;padding:.5rem 0 calc(.5rem + env(safe-area-inset-bottom))}
+.nav-item{display:flex;flex-direction:column;align-items:center;gap:.2rem;
+  text-decoration:none;color:var(--dimmer);flex:1;padding:.3rem 0;
+  transition:color .15s;font-size:.58rem;font-weight:600;letter-spacing:.04em}
+.nav-item:hover,.nav-item.active{color:var(--gold)}
+.nav-icon{font-size:1.2rem;line-height:1}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-monogram">MTM</div>
+  <div class="hero-name">Michael T. Moore</div>
+  <div class="hero-motto">✦ SINE LIMITE ✦</div>
+  <div class="hero-date" id="hero-date"></div>
+</div>
+
+<div class="page">
+
+  <!-- SYSTEM STATUS -->
+  <div class="status-bar">
+    <div class="status-dot"></div>
+    <div class="status-text">
+      <strong>MTM System Online</strong> — 5 automated agents running
+    </div>
+    <div class="status-time" id="status-time"></div>
+  </div>
+
+  <!-- MODULES -->
+  <div class="section">
+    <div class="section-label">Your Modules</div>
+    <div class="module-grid">
+
+      <a class="module-card active" href="style.html">
+        <div class="mod-header">
+          <div class="mod-icon">👔</div>
+          <div class="mod-badge badge-live">Live</div>
+        </div>
+        <div class="mod-name">MTM Style System</div>
+        <div class="mod-sub">Quiet luxury wardrobe · Bangkok tailor specs · Fragrance collection · Dress codes</div>
+        <div class="mod-stats">
+          <span class="mod-stat">5-color palette</span>
+          <span class="mod-stat">27+ outfits</span>
+          <span class="mod-stat">6 fragrances</span>
+          <span class="mod-stat">Rajawongse spec</span>
+        </div>
+      </a>
+
+      <a class="module-card active" href="packing.html">
+        <div class="mod-header">
+          <div class="mod-icon">🧳</div>
+          <div class="mod-badge badge-live">Live</div>
+        </div>
+        <div class="mod-name">Travel & Packing</div>
+        <div class="mod-sub">Sudoku packing method · Bangkok shopping list · Bag system · 2-month SE Asia trip</div>
+        <div class="mod-stats">
+          <span class="mod-stat">9 core pieces</span>
+          <span class="mod-stat">3-bag system</span>
+          <span class="mod-stat">SE Asia</span>
+          <span class="mod-stat">Bespoke shoes</span>
+        </div>
+      </a>
+
+      <a class="module-card active" href="dating.html">
+        <div class="mod-header">
+          <div class="mod-icon">💘</div>
+          <div class="mod-badge badge-live">Live</div>
+        </div>
+        <div class="mod-name">Dating OS</div>
+        <div class="mod-sub">Intentional · International · 80% Must-Have rule · 7 platforms · 18 questions by tier</div>
+        <div class="mod-stats">
+          <span class="mod-stat">8 must-haves</span>
+          <span class="mod-stat">7 platforms</span>
+          <span class="mod-stat">80% rule</span>
+          <span class="mod-stat">Prospect tracker</span>
+        </div>
+      </a>
+
+      <a class="module-card" href="https://www.mavtg.com" target="_blank">
+        <div class="mod-header">
+          <div class="mod-icon">🌍</div>
+          <div class="mod-badge badge-live">Live</div>
+        </div>
+        <div class="mod-name">MAVTG</div>
+        <div class="mod-sub">Medical Adventure Voyage Travel Group · Medical travel, books, advocacy, clothing</div>
+        <div class="mod-stats">
+          <span class="mod-stat">www.mavtg.com</span>
+          <span class="mod-stat">Vercel</span>
+          <span class="mod-stat">Moore Legacy Press</span>
+        </div>
+      </a>
+
+      <a class="module-card" href="services.html">
+        <div class="mod-header">
+          <div class="mod-icon">📋</div>
+          <div class="mod-badge badge-building">Building</div>
+        </div>
+        <div class="mod-name">MAVTG Services</div>
+        <div class="mod-sub">Travel consulting · Dialysis cruise planning · PICC gear · Speaking & advocacy</div>
+        <div class="mod-stats">
+          <span class="mod-stat">6 services</span>
+          <span class="mod-stat">3 pricing tiers</span>
+          <span class="mod-stat">Launching soon</span>
+        </div>
+      </a>
+
+      <div class="module-card" style="opacity:.6;cursor:default">
+        <div class="mod-header">
+          <div class="mod-icon">📈</div>
+          <div class="mod-badge badge-soon">Soon</div>
+        </div>
+        <div class="mod-name">Finance OS</div>
+        <div class="mod-sub">Portfolio tracking · Robinhood · Schwab · E*Trade · Building while building the brand</div>
+        <div class="mod-stats">
+          <span class="mod-stat">Robinhood</span>
+          <span class="mod-stat">Schwab</span>
+          <span class="mod-stat">E*Trade</span>
+        </div>
+      </div>
+
+      <div class="module-card" style="opacity:.6;cursor:default">
+        <div class="mod-header">
+          <div class="mod-icon">🫀</div>
+          <div class="mod-badge badge-soon">Soon</div>
+        </div>
+        <div class="mod-name">Health OS</div>
+        <div class="mod-sub">Dialysis schedule · Medications · Dr. Reid · Transplant journey · Post-transplant goals</div>
+        <div class="mod-stats">
+          <span class="mod-stat">Dr. Reid 727-828-6370</span>
+          <span class="mod-stat">DaVita</span>
+        </div>
+      </div>
+
+      <div class="module-card" style="opacity:.6;cursor:default">
+        <div class="mod-header">
+          <div class="mod-icon">✍️</div>
+          <div class="mod-badge badge-building">Building</div>
+        </div>
+        <div class="mod-name">Books & Legacy</div>
+        <div class="mod-sub">I Missed the Signs · When Michael Got Sick · Kids Book · Moore Legacy Press</div>
+        <div class="mod-stats">
+          <span class="mod-stat">3 in progress</span>
+          <span class="mod-stat">Amazon live</span>
+          <span class="mod-stat">Moore Legacy Press</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- AUTOMATED SYSTEM -->
+  <div class="section">
+    <div class="section-label">Automated Agents</div>
+    <div class="quick-card" style="grid-column:1/-1">
+      <div class="quick-label">Running 24/7 — Nothing Gets Lost</div>
+      <div class="automation-row">
+        <div class="auto-badge">🌙 Midnight — Daily Drive snapshot</div>
+        <div class="auto-badge">☀️ 8am — Morning brief ready to paste</div>
+        <div class="auto-badge">📅 Sunday — Weekly master doc refresh</div>
+        <div class="auto-badge">💾 Saturday — Full HTML backup + email</div>
+        <div class="auto-badge">🌐 Wednesday — MAVTG site health check</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LIFE PILLARS -->
+  <div class="section">
+    <div class="section-label">Life Pillars</div>
+    <div class="pillars">
+      <div class="pillar">
+        <div class="pillar-icon">🙏</div>
+        <div class="pillar-name">Faith</div>
+        <div class="pillar-note">Church every week. The foundation everything stands on.</div>
+      </div>
+      <div class="pillar">
+        <div class="pillar-icon">🫀</div>
+        <div class="pillar-name">Health</div>
+        <div class="pillar-note">Transplant journey. Top of FL list. Dr. Reid 727-828-6370.</div>
+      </div>
+      <div class="pillar">
+        <div class="pillar-icon">✍️</div>
+        <div class="pillar-name">Legacy</div>
+        <div class="pillar-note">3 books. Moore Legacy Press. Writing the story while living it.</div>
+      </div>
+      <div class="pillar">
+        <div class="pillar-icon">🌍</div>
+        <div class="pillar-name">Travel</div>
+        <div class="pillar-note">SE Asia · Mediterranean · South America. No limits.</div>
+      </div>
+      <div class="pillar">
+        <div class="pillar-icon">💼</div>
+        <div class="pillar-name">MAVTG</div>
+        <div class="pillar-note">Brand on the horizon. Content building in background.</div>
+      </div>
+      <div class="pillar">
+        <div class="pillar-icon">👨‍👦</div>
+        <div class="pillar-name">Family</div>
+        <div class="pillar-note">Malcolm. MTM monogram. Sine Limite. Build to pass down.</div>
+      </div>
+      <div class="pillar">
+        <div class="pillar-icon">💰</div>
+        <div class="pillar-name">Finance</div>
+        <div class="pillar-note">Robinhood · Schwab · E*Trade. Portfolio + brand in parallel.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUICK REFERENCE -->
+  <div class="section">
+    <div class="section-label">Quick Reference</div>
+    <div class="quick-grid">
+      <div class="quick-card">
+        <div class="quick-label">Identity</div>
+        <div class="quick-item"><span>Full name</span><strong>Michael T. Moore</strong></div>
+        <div class="quick-item"><span>Monogram</span><strong>MTM</strong></div>
+        <div class="quick-item"><span>Motto</span><strong>Sine Limite</strong></div>
+        <div class="quick-item"><span>Faith</span><strong>Christian</strong></div>
+        <div class="quick-item"><span>Based</span><strong>Tampa → Living Abroad</strong></div>
+        <div class="quick-item"><span>Lifestyle</span><strong>Travel · Cigars · Quiet Luxury</strong></div>
+      </div>
+      <div class="quick-card">
+        <div class="quick-label">Deploy Commands</div>
+        <div class="quick-item"><span>MAVTG prod</span><code>vercel --prod</code></div>
+        <div class="quick-item"><span>Push GitHub</span><code>git push origin main</code></div>
+        <div class="quick-item"><span>JARVIS check</span><code>railway status</code></div>
+        <div class="quick-item"><span>JARVIS logs</span><code>railway logs</code></div>
+      </div>
+      <div class="quick-card">
+        <div class="quick-label">Key Contacts</div>
+        <div class="quick-item"><span>Dr. Reid</span><strong>727-828-6370</strong></div>
+        <div class="quick-item"><span>DaVita travel</span><strong>Frank Prather</strong></div>
+        <div class="quick-item"><span>DaVita auth</span><strong>Jenny Lopez Melo</strong></div>
+        <div class="quick-item"><span>Email</span><strong>1898tm@gmail.com</strong></div>
+      </div>
+      <div class="quick-card">
+        <div class="quick-label">Style System</div>
+        <div class="quick-item"><span>Palette</span><strong>■◆○▲● only</strong></div>
+        <div class="quick-item"><span>Suit 1</span><strong>Navy · VBC Tropical</strong></div>
+        <div class="quick-item"><span>Suit 2</span><strong>Stone · Solbiati blend</strong></div>
+        <div class="quick-item"><span>Tailor</span><strong>Rajawongse · 130 Sukhumvit</strong></div>
+        <div class="quick-item"><span>Signature scent</span><strong>Nishane Hacivat</strong></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+  <a class="nav-item active" href="mtm-home.html">
+    <div class="nav-icon">⬡</div>MTM
+  </a>
+  <a class="nav-item" href="style.html">
+    <div class="nav-icon">👔</div>Style
+  </a>
+  <a class="nav-item" href="packing.html">
+    <div class="nav-icon">🧳</div>Travel
+  </a>
+  <a class="nav-item" href="dating.html">
+    <div class="nav-icon">💘</div>Dating
+  </a>
+  <a class="nav-item" href="https://www.mavtg.com" target="_blank">
+    <div class="nav-icon">🌍</div>MAVTG
+  </a>
+</nav>
+
+<script>
+// Date display
+function updateDate() {
+  var now = new Date();
+  var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  var d = days[now.getDay()] + ', ' + months[now.getMonth()] + ' ' + now.getDate() + ', ' + now.getFullYear();
+  document.getElementById('hero-date').textContent = d;
+  var t = now.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true});
+  document.getElementById('status-time').textContent = t;
+}
+updateDate();
+setInterval(updateDate, 30000);
+</script>
+
+</body>
+</html>
