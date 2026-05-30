@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dating OS · MTM</title>
+<script src="/jarvis-auth.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:#080c16;color:#fff;font-family:-apple-system,"SF Pro Display",BlinkMacSystemFont,"Segoe UI",sans-serif;min-height:100vh;padding:24px 16px 80px}
+.page-wrap{max-width:900px;margin:0 auto}
+.hero{text-align:center;padding:40px 0 32px;border-bottom:1px solid rgba(255,255,255,.08);margin-bottom:32px}
+.hero-eyebrow{font-size:.68rem;letter-spacing:.28em;color:rgba(255,255,255,.35);text-transform:uppercase;margin-bottom:10px}
+.hero-title{font-size:2rem;font-weight:700;letter-spacing:-.03em;background:linear-gradient(135deg,#fff 60%,rgba(255,255,255,.5));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-sub{font-size:.83rem;color:rgba(255,255,255,.45);margin-top:10px;line-height:1.6}
+.rule-badge{display:inline-block;margin-top:14px;padding:6px 20px;border:1px solid rgba(255,180,100,.35);border-radius:980px;font-size:.72rem;font-weight:600;letter-spacing:.1em;color:rgba(255,180,100,.9);background:rgba(255,180,100,.06)}
+.section{margin-bottom:36px}
+.section-title{font-size:.65rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:14px;padding-left:2px;display:flex;align-items:center;gap:8px}
+.section-title::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.07)}
+.card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:20px}
+.card+.card{margin-top:12px}
+.card-title{font-size:.85rem;font-weight:600;color:#fff;margin-bottom:6px}
+.card-body{font-size:.78rem;color:rgba(255,255,255,.55);line-height:1.6}
+.profile-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+.prof-item{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:14px 16px}
+.prof-label{font-size:.62rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:5px}
+.prof-value{font-size:.83rem;font-weight:500;color:#fff;line-height:1.4}
+.wish-item{display:flex;align-items:flex-start;gap:12px;padding:13px 16px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;margin-bottom:8px;cursor:pointer;transition:background .15s,border-color .15s;user-select:none}
+.wish-item:hover{background:rgba(255,255,255,.06)}
+.wish-item.must{border-color:rgba(255,80,80,.4);background:rgba(255,80,80,.05)}
+.wish-item.nice{border-color:rgba(255,190,60,.4);background:rgba(255,190,60,.05)}
+.wish-item.flex{border-color:rgba(80,200,140,.4);background:rgba(80,200,140,.05)}
+.wish-badge{flex-shrink:0;font-size:.62rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:4px 10px;border-radius:980px;background:rgba(255,255,255,.08);color:rgba(255,255,255,.4);border:1px solid rgba(255,255,255,.1);white-space:nowrap;min-width:64px;text-align:center;transition:all .15s}
+.must .wish-badge{background:rgba(255,80,80,.18);color:rgba(255,120,120,.95);border-color:rgba(255,80,80,.4)}
+.nice .wish-badge{background:rgba(255,190,60,.18);color:rgba(255,200,80,.95);border-color:rgba(255,190,60,.4)}
+.flex .wish-badge{background:rgba(80,200,140,.18);color:rgba(100,220,160,.95);border-color:rgba(80,200,140,.4)}
+.wish-text{flex:1;min-width:0}
+.wish-name{font-size:.83rem;font-weight:600;color:#fff;margin-bottom:2px}
+.wish-desc{font-size:.72rem;color:rgba(255,255,255,.45);line-height:1.4}
+.wish-legend{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:14px}
+.wl-dot{display:flex;align-items:center;gap:6px;font-size:.72rem;color:rgba(255,255,255,.5)}
+.platform-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+.plat-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:18px}
+.plat-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
+.plat-name{font-size:.88rem;font-weight:700;color:#fff}
+.plat-region{font-size:.68rem;color:rgba(255,255,255,.35);margin-top:2px}
+.plat-status{font-size:.62rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:3px 9px;border-radius:980px;border:1px solid;cursor:pointer;white-space:nowrap;transition:all .15s}
+.plat-status.off{background:rgba(255,255,255,.05);color:rgba(255,255,255,.35);border-color:rgba(255,255,255,.12)}
+.plat-status.active{background:rgba(80,200,140,.18);color:rgba(100,220,160,.95);border-color:rgba(80,200,140,.4)}
+.plat-status.paused{background:rgba(255,190,60,.18);color:rgba(255,200,80,.95);border-color:rgba(255,190,60,.4)}
+.plat-rating{display:flex;gap:3px;margin-bottom:8px}
+.plat-star{font-size:.78rem;color:rgba(255,255,255,.2)}
+.plat-star.on{color:rgba(255,200,60,.9)}
+.plat-why{font-size:.74rem;color:rgba(255,255,255,.5);line-height:1.5;margin-bottom:10px}
+.plat-note{width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:8px 10px;color:rgba(255,255,255,.7);font-size:.74rem;font-family:inherit;resize:none;outline:none;min-height:56px;transition:border-color .15s}
+.plat-note:focus{border-color:rgba(255,255,255,.18)}
+.plat-note::placeholder{color:rgba(255,255,255,.2)}
+.q-group{margin-bottom:24px}
+.q-group-title{font-size:.65rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:10px}
+.q-item{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:10px;margin-bottom:7px}
+.q-num{flex-shrink:0;font-size:.68rem;font-weight:700;color:rgba(255,255,255,.25);width:20px;padding-top:2px}
+.q-text{font-size:.8rem;color:rgba(255,255,255,.75);line-height:1.5;flex:1}
+.q-tier{flex-shrink:0;font-size:.58rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:2px 7px;border-radius:980px;border:1px solid;white-space:nowrap;margin-top:2px}
+.q-tier.t1{background:rgba(255,80,80,.12);color:rgba(255,120,120,.9);border-color:rgba(255,80,80,.3)}
+.q-tier.t2{background:rgba(255,190,60,.12);color:rgba(255,200,80,.9);border-color:rgba(255,190,60,.3)}
+.q-tier.t3{background:rgba(80,180,255,.12);color:rgba(100,200,255,.9);border-color:rgba(80,180,255,.3)}
+.flag-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.flag-col-title{font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.flag-item{display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:9px;margin-bottom:6px;font-size:.78rem;color:rgba(255,255,255,.7);background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);cursor:pointer;transition:all .15s;user-select:none}
+.flag-item:hover{background:rgba(255,255,255,.06)}
+.flag-check{width:18px;height:18px;border-radius:5px;border:1px solid rgba(255,255,255,.2);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.68rem;transition:all .15s}
+.flag-item.checked .flag-check{background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.4)}
+.green-col .flag-item.checked .flag-check{background:rgba(80,200,140,.25);border-color:rgba(80,200,140,.6);color:#50c88c}
+.red-col .flag-item.checked .flag-check{background:rgba(255,80,80,.25);border-color:rgba(255,80,80,.6);color:#ff5050}
+.score-wrap{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:20px;text-align:center}
+.score-num{font-size:2.8rem;font-weight:700;letter-spacing:-.04em;color:#fff;margin-bottom:4px}
+.score-label{font-size:.72rem;color:rgba(255,255,255,.4);letter-spacing:.1em;text-transform:uppercase}
+.score-bar{height:6px;background:rgba(255,255,255,.08);border-radius:3px;margin:14px 0 8px;overflow:hidden}
+.score-fill{height:100%;border-radius:3px;transition:width .4s;background:linear-gradient(90deg,rgba(255,80,80,.8),rgba(255,190,60,.9) 50%,rgba(80,200,140,.9))}
+.score-rule{font-size:.72rem;color:rgba(255,255,255,.35);font-style:italic}
+.prospect-item{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:16px 18px;margin-bottom:10px}
+.prospect-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.prospect-name{font-size:.88rem;font-weight:600;color:#fff}
+.prospect-stage{font-size:.62rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:3px 9px;border-radius:980px;background:rgba(80,180,255,.15);color:rgba(100,200,255,.9);border:1px solid rgba(80,180,255,.3)}
+.prospect-fields{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.prospect-field label{display:block;font-size:.6rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.28);margin-bottom:3px}
+.prospect-field input,.prospect-field select{width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:7px 10px;color:#fff;font-size:.78rem;font-family:inherit;outline:none;transition:border-color .15s}
+.prospect-field input:focus,.prospect-field select:focus{border-color:rgba(255,255,255,.18)}
+.prospect-field input::placeholder{color:rgba(255,255,255,.2)}
+.prospect-field select option{background:#0d1525;color:#fff}
+.prospect-notes{width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:8px 10px;color:rgba(255,255,255,.7);font-size:.74rem;font-family:inherit;resize:none;outline:none;min-height:52px;transition:border-color .15s}
+.prospect-notes:focus{border-color:rgba(255,255,255,.18)}
+.prospect-notes::placeholder{color:rgba(255,255,255,.2)}
+.prospect-actions{display:flex;gap:8px;margin-top:10px}
+.btn-sm{padding:6px 14px;border-radius:8px;font-size:.72rem;font-weight:600;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.06);color:rgba(255,255,255,.7);cursor:pointer;transition:all .15s;font-family:inherit}
+.btn-sm:hover{background:rgba(255,255,255,.12);color:#fff}
+.btn-danger{border-color:rgba(255,80,80,.3);color:rgba(255,120,120,.8)}
+.btn-danger:hover{background:rgba(255,80,80,.15);border-color:rgba(255,80,80,.5);color:#ff7070}
+.btn-add{width:100%;padding:12px;border-radius:12px;background:rgba(255,255,255,.04);border:1px dashed rgba(255,255,255,.15);color:rgba(255,255,255,.45);font-size:.8rem;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s;margin-top:4px}
+.btn-add:hover{background:rgba(255,255,255,.08);color:rgba(255,255,255,.75);border-color:rgba(255,255,255,.25)}
+@media(max-width:600px){.flag-grid{grid-template-columns:1fr}.platform-grid{grid-template-columns:1fr}.prospect-fields{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="page-wrap">
+  <div class="hero">
+    <div class="hero-eyebrow">Moore Money · Personal</div>
+    <div class="hero-title">Dating OS</div>
+    <div class="hero-sub">Intentional, international, quality over quantity.<br>You know what you want — use this to stay focused.</div>
+    <div class="rule-badge">80% Match Rule · No Settling</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">My Profile</div>
+    <div class="profile-grid">
+      <div class="prof-item"><div class="prof-label">Name</div><div class="prof-value">Michael Moore</div></div>
+      <div class="prof-item"><div class="prof-label">Age</div><div class="prof-value">51 · May 16, 1975</div></div>
+      <div class="prof-item"><div class="prof-label">Height / Build</div><div class="prof-value">5'11" · 200 lbs · Solid</div></div>
+      <div class="prof-item"><div class="prof-label">Based In</div><div class="prof-value">Tampa, FL → Living Abroad</div></div>
+      <div class="prof-item"><div class="prof-label">What I Do</div><div class="prof-value">Founder · MAVTG LLC</div></div>
+      <div class="prof-item"><div class="prof-label">Faith</div><div class="prof-value">Christian · Core Pillar</div></div>
+      <div class="prof-item"><div class="prof-label">Lifestyle</div><div class="prof-value">Travel · Cigars · Quiet Luxury</div></div>
+      <div class="prof-item"><div class="prof-label">Kids</div><div class="prof-value">Yes · Open to More</div></div>
+      <div class="prof-item"><div class="prof-label">Travel Plans</div><div class="prof-value">SE Asia · Mediterranean · South America</div></div>
+      <div class="prof-item"><div class="prof-label">Looking For</div><div class="prof-value">Serious · Long-term · Family</div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Partner Wishlist</div>
+    <div class="wish-legend">
+      <div class="wl-dot">🔴 Must Have — non-negotiable</div>
+      <div class="wl-dot">🟡 Nice to Have — strong preference</div>
+      <div class="wl-dot">🟢 Flexible — open to discussion</div>
+    </div>
+    <div style="font-size:.74rem;color:rgba(255,255,255,.35);margin-bottom:14px;font-style:italic">Tap any item to cycle its priority level. Saves automatically.</div>
+    <div id="wish-list"></div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Dating Platforms</div>
+    <div class="platform-grid" id="platform-grid"></div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Questions to Ask Her</div>
+    <div style="margin-bottom:16px">
+      <span style="font-size:.72rem;color:rgba(255,255,255,.35)">Tier labels: </span>
+      <span class="q-tier t1" style="margin:0 4px">Screen</span>
+      <span style="font-size:.72rem;color:rgba(255,255,255,.35)">ask early · </span>
+      <span class="q-tier t2" style="margin:0 4px">Depth</span>
+      <span style="font-size:.72rem;color:rgba(255,255,255,.35)">first/second date · </span>
+      <span class="q-tier t3" style="margin:0 4px">Vision</span>
+      <span style="font-size:.72rem;color:rgba(255,255,255,.35)">when things get serious</span>
+    </div>
+    <div id="questions-list"></div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Green Flags &amp; Red Flags</div>
+    <div class="flag-grid">
+      <div class="green-col">
+        <div class="flag-col-title" style="color:rgba(80,200,140,.8)">✓ Green Flags</div>
+        <div id="green-flags"></div>
+      </div>
+      <div class="red-col">
+        <div class="flag-col-title" style="color:rgba(255,100,100,.8)">✗ Red Flags</div>
+        <div id="red-flags"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">80% Rule</div>
+    <div class="score-wrap">
+      <div class="score-num" id="score-pct">—</div>
+      <div class="score-label">Must-Have Criteria Met</div>
+      <div class="score-bar"><div class="score-fill" id="score-fill" style="width:0%"></div></div>
+      <div class="score-rule">Minimum 80% of Must-Haves before investing time. No exceptions.</div>
+    </div>
+    <div style="margin-top:12px"><div id="score-checks"></div></div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Prospect Tracker</div>
+    <div id="prospects"></div>
+    <button class="btn-add" onclick="addProspect()">+ Add Person</button>
+  </div>
+</div>
+
+<script>
+var WISH=[
+  {id:'age',name:'Younger than Michael',desc:'Preferably 28–42. Not looking for an older woman.',def:'must'},
+  {id:'nokids',name:'No Children',desc:'She has no kids from previous relationships.',def:'must'},
+  {id:'faith',name:'Faith / Spiritual Foundation',desc:'Christian or faith-based values. Non-negotiable pillar.',def:'must'},
+  {id:'kind',name:'Kind & Thoughtful',desc:'Genuinely caring, not performatively. How she treats others.',def:'must'},
+  {id:'nurture',name:'Nurturing — Will Take Care of Me',desc:'Partnership energy. Not transactional. Reciprocal love.',def:'must'},
+  {id:'beauty',name:'Physically Beautiful to Me',desc:'Attraction is real. This matters and that is honest.',def:'must'},
+  {id:'open',name:'Open to Living Abroad',desc:'Willing to relocate, travel, build a life outside the US.',def:'must'},
+  {id:'family',name:'Wants to Build a Family',desc:'Open to having children. Aligned on legacy and home.',def:'must'},
+  {id:'intl',name:'International / Overseas',desc:'From SE Asia, Mediterranean, South America, or elsewhere.',def:'nice'},
+  {id:'style',name:'Takes Care of Herself',desc:'Health, grooming, presentation. Not high-maintenance.',def:'nice'},
+  {id:'smart',name:'Intelligent & Curious',desc:'Reads, learns, holds a conversation at depth.',def:'nice'},
+  {id:'cooking',name:'Cooks / Homebody Side',desc:'Comfort in building a home together.',def:'nice'},
+  {id:'calm',name:'Even-Tempered & Peaceful',desc:'No drama, no volatility. Secure in herself.',def:'nice'},
+  {id:'loyal',name:'Deeply Loyal',desc:'Ride-or-die energy. Values commitment over convenience.',def:'nice'},
+  {id:'career',name:'Career / Her Own Thing',desc:'Nice if she has purpose; not required to work if we build right.',def:'flex'},
+  {id:'lang',name:'Speaks English',desc:'Helpful but translators and patience go a long way.',def:'flex'},
+  {id:'social',name:'Social & Outgoing',desc:'Can work a room but does not need to. Homebody balance fine.',def:'flex'},
+  {id:'culture',name:'Specific Culture / Background',desc:'No requirement. Love is love wherever she is from.',def:'flex'},
+];
+var PLATFORMS=[
+  {id:'hinge',name:'Hinge',region:'Global — Best Algorithm',rating:5,why:'Best signal-to-noise ratio. Switch location to Bangkok, Lisbon, or São Paulo before you arrive. Premium allows location changes.',cost:'Free / $30 mo'},
+  {id:'bumble',name:'Bumble',region:'Global — Women Message First',rating:4,why:'Women initiate — naturally filters for confident, decisive women. Works well in Thailand, Philippines, Brazil.',cost:'Free / $22 mo'},
+  {id:'match',name:'Match.com',region:'Global — Serious Relationships',rating:3,why:'Older demographic but serious intent. International version works in most countries. Better for 35+ women who want commitment.',cost:'$45 mo'},
+  {id:'thaicupid',name:'ThaiCupid',region:'Thailand · Philippines Focus',rating:4,why:'CupidMedia network. Best dedicated platform for Thailand. Set up profile before landing in Bangkok.',cost:'$15–30 mo'},
+  {id:'filcupid',name:'FilipinoCupid',region:'Philippines Focus',rating:4,why:'Same CupidMedia network. Highly active in the Philippines. Women often serious about international relationships.',cost:'$15–30 mo'},
+  {id:'latam',name:'LatinAmericanCupid',region:'Brazil · South America',rating:3,why:'Best reach in Brazil, Colombia, Peru. Activate before South America leg of your trip.',cost:'$15–30 mo'},
+  {id:'badoo',name:'Badoo',region:'Europe · South America',rating:3,why:'Massive in Portugal, Italy, Greece, and Brazil. Less polished than Hinge but very active in Mediterranean cities.',cost:'Free / premium'},
+];
+var QUESTIONS=[
+  {tier:'t1',text:'What does your faith look like in your daily life?'},
+  {tier:'t1',text:'Do you have children? Are you open to having them?'},
+  {tier:'t1',text:'How do you feel about the idea of living outside your home country?'},
+  {tier:'t1',text:'What does a relationship mean to you at this stage of your life?'},
+  {tier:'t1',text:'Are you in a place where you are ready for something serious?'},
+  {tier:'t2',text:'How did you grow up, and how did that shape how you love people?'},
+  {tier:'t2',text:'What does a great partner look like to you? What do you bring?'},
+  {tier:'t2',text:'How do you handle conflict? What does disagreement look like for you?'},
+  {tier:'t2',text:'What does your ideal home and daily life look like five years from now?'},
+  {tier:'t2',text:'What does loyalty mean to you, and has someone ever broken yours?'},
+  {tier:'t2',text:'How important is building a legacy — not just for yourself but for family?'},
+  {tier:'t2',text:'What is your relationship like with your own family?'},
+  {tier:'t2',text:'What do you do when someone you love is going through something hard?'},
+  {tier:'t3',text:'Would you be willing to relocate and build somewhere completely new together?'},
+  {tier:'t3',text:'How do you feel about raising children with a strong faith foundation?'},
+  {tier:'t3',text:'What does financial partnership look like in a relationship to you?'},
+  {tier:'t3',text:'How do you feel about a man who leads the household but values your voice equally?'},
+  {tier:'t3',text:'If we built something together — a home, a family, a life overseas — where would you want to be?'},
+];
+var GREEN_FLAGS=['Talks about her family warmly and with specifics','Has her own interests, goals, hobbies','Comfortable with silence, not anxious for attention','Speaks kindly about her exes (no obsessive negativity)','Faith is active, not just cultural background','Shows genuine curiosity about your life, not just your status','Physically affectionate in a natural way','Makes plans and follows through','Takes care of her health and appearance consistently','Asks thoughtful questions back'];
+var RED_FLAGS=['Inconsistent communication early on','Talks negatively about all her exes','Only engages when she wants something','Vague or evasive about her living situation or past','Love-bombing early — too much too fast','No relationship with family or won\'t discuss it','Faith is performative, not lived','Has children she did not disclose upfront','Financially inconsistent stories','Extreme drama with friends or family','Pressures you to move faster than feels right','Dismisses your values as "old fashioned"'];
+
+function load(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
+function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+
+var wishState=load('mtm_dating_wish',{});
+var platState=load('mtm_dating_plat',{});
+var flagState=load('mtm_dating_flags',{});
+var prospects=load('mtm_dating_prospects',[]);
+
+WISH.forEach(function(w){if(!wishState[w.id])wishState[w.id]=w.def;});
+
+var CYCLES=['must','nice','flex','none'];
+var LABELS={must:'Must Have',nice:'Nice to Have',flex:'Flexible',none:'Not a Priority'};
+
+function renderWish(){
+  var el=document.getElementById('wish-list');
+  el.innerHTML='';
+  WISH.forEach(function(w){
+    var state=wishState[w.id]||'none';
+    var div=document.createElement('div');
+    div.className='wish-item '+(state==='none'?'':state);
+    div.innerHTML='<div class="wish-badge">'+LABELS[state]+'</div><div class="wish-text"><div class="wish-name">'+w.name+'</div><div class="wish-desc">'+w.desc+'</div></div>';
+    div.addEventListener('click',function(){
+      var cur=wishState[w.id]||'none';
+      wishState[w.id]=CYCLES[(CYCLES.indexOf(cur)+1)%CYCLES.length];
+      save('mtm_dating_wish',wishState);renderWish();renderScore();
+    });
+    el.appendChild(div);
+  });
+}
+
+var PLAT_CYCLES=['off','active','paused'];
+var PLAT_LABELS={off:'Set Up',active:'Active',paused:'Paused'};
+
+function renderPlatforms(){
+  var el=document.getElementById('platform-grid');
+  el.innerHTML='';
+  PLATFORMS.forEach(function(p){
+    var st=platState[p.id+'_status']||'off';
+    var note=platState[p.id+'_note']||'';
+    var card=document.createElement('div');
+    card.className='plat-card';
+    var stars='';
+    for(var i=1;i<=5;i++)stars+='<span class="plat-star'+(i<=p.rating?' on':'')+'">★</span>';
+    card.innerHTML='<div class="plat-header"><div><div class="plat-name">'+p.name+'</div><div class="plat-region">'+p.region+'</div></div><div class="plat-status '+st+'" data-pid="'+p.id+'">'+PLAT_LABELS[st]+'</div></div><div class="plat-rating">'+stars+'</div><div class="plat-why">'+p.why+' <span style="color:rgba(255,255,255,.25)">'+p.cost+'</span></div><textarea class="plat-note" placeholder="Notes — matches, impressions, pause reason…" data-pid="'+p.id+'">'+escHtml(note)+'</textarea>';
+    el.appendChild(card);
+    card.querySelector('.plat-status').addEventListener('click',function(){
+      var pid=this.getAttribute('data-pid');
+      var cur=platState[pid+'_status']||'off';
+      platState[pid+'_status']=PLAT_CYCLES[(PLAT_CYCLES.indexOf(cur)+1)%PLAT_CYCLES.length];
+      save('mtm_dating_plat',platState);renderPlatforms();
+    });
+    card.querySelector('.plat-note').addEventListener('input',function(){
+      platState[this.getAttribute('data-pid')+'_note']=this.value;
+      save('mtm_dating_plat',platState);
+    });
+  });
+}
+
+function renderQuestions(){
+  var el=document.getElementById('questions-list');
+  el.innerHTML='';
+  var groups={t1:{label:'Screen — Ask Early',items:[]},t2:{label:'Depth — First & Second Date',items:[]},t3:{label:'Vision — When Things Get Serious',items:[]}};
+  QUESTIONS.forEach(function(q){groups[q.tier].items.push(q);});
+  var n=1;
+  Object.keys(groups).forEach(function(g){
+    var grp=groups[g];
+    var wrap=document.createElement('div');
+    wrap.className='q-group';
+    wrap.innerHTML='<div class="q-group-title">'+grp.label+'</div>';
+    grp.items.forEach(function(q){
+      var row=document.createElement('div');
+      row.className='q-item';
+      row.innerHTML='<div class="q-num">'+n+'</div><div class="q-text">'+q.text+'</div><div class="q-tier '+g+'">'+(g==='t1'?'Screen':g==='t2'?'Depth':'Vision')+'</div>';
+      wrap.appendChild(row);n++;
+    });
+    el.appendChild(wrap);
+  });
+}
+
+function renderFlags(){
+  renderFlagGroup('green-flags',GREEN_FLAGS,'g','✓');
+  renderFlagGroup('red-flags',RED_FLAGS,'r','✗');
+}
+function renderFlagGroup(elId,items,prefix,mark){
+  var el=document.getElementById(elId);
+  el.innerHTML='';
+  items.forEach(function(text,i){
+    var key=prefix+i;
+    var checked=flagState[key]||false;
+    var div=document.createElement('div');
+    div.className='flag-item'+(checked?' checked':'');
+    div.innerHTML='<div class="flag-check">'+(checked?mark:'')+'</div><span>'+text+'</span>';
+    div.addEventListener('click',function(){
+      flagState[key]=!flagState[key];save('mtm_dating_flags',flagState);renderFlags();
+    });
+    el.appendChild(div);
+  });
+}
+
+function renderScore(){
+  var mustItems=WISH.filter(function(w){return wishState[w.id]==='must';});
+  var greenChecked=GREEN_FLAGS.filter(function(_,i){return flagState['g'+i];}).length;
+  var pct=mustItems.length>0?Math.round((greenChecked/GREEN_FLAGS.length)*100):0;
+  document.getElementById('score-pct').textContent=greenChecked+'/'+GREEN_FLAGS.length;
+  document.getElementById('score-fill').style.width=pct+'%';
+  var el=document.getElementById('score-checks');
+  el.innerHTML='<div style="font-size:.72rem;color:rgba(255,255,255,.35);margin-bottom:10px">Your Must-Have criteria ('+mustItems.length+' items). Use green flags per prospect to score against these.</div><div style="display:flex;flex-wrap:wrap;gap:8px">'+mustItems.map(function(w){return'<div style="font-size:.74rem;padding:4px 12px;border-radius:980px;background:rgba(255,80,80,.1);border:1px solid rgba(255,80,80,.25);color:rgba(255,160,160,.9)">'+w.name+'</div>';}).join('')+'</div>';
+}
+
+var STAGES=['Matched','Talking','Date Planned','Dating','Serious','Passed'];
+function renderProspects(){
+  var el=document.getElementById('prospects');
+  el.innerHTML='';
+  if(!prospects.length){el.innerHTML='<div style="text-align:center;padding:24px;font-size:.8rem;color:rgba(255,255,255,.25)">No one tracked yet. Add a prospect below when you meet someone worth following up on.</div>';return;}
+  prospects.forEach(function(p,idx){
+    var div=document.createElement('div');
+    div.className='prospect-item';
+    var stageOpts=STAGES.map(function(s){return'<option'+(p.stage===s?' selected':'')+'>'+s+'</option>';}).join('');
+    div.innerHTML='<div class="prospect-header"><div class="prospect-name">'+escHtml(p.name||'New Person')+'</div><div class="prospect-stage">'+escHtml(p.stage||'Matched')+'</div></div><div class="prospect-fields"><div class="prospect-field"><label>Name / Handle</label><input type="text" placeholder="Her name" value="'+escHtml(p.name||'')+'" data-idx="'+idx+'" data-field="name"></div><div class="prospect-field"><label>Platform</label><input type="text" placeholder="Hinge, Bumble…" value="'+escHtml(p.platform||'')+'" data-idx="'+idx+'" data-field="platform"></div><div class="prospect-field"><label>Location</label><input type="text" placeholder="Bangkok, Lisbon…" value="'+escHtml(p.location||'')+'" data-idx="'+idx+'" data-field="location"></div><div class="prospect-field"><label>Stage</label><select data-idx="'+idx+'" data-field="stage">'+stageOpts+'</select></div></div><textarea class="prospect-notes" placeholder="Notes — green flags, red flags, vibe, what she said about kids/faith/travel…" data-idx="'+idx+'" data-field="notes">'+escHtml(p.notes||'')+'</textarea><div class="prospect-actions"><button class="btn-sm btn-danger" data-idx="'+idx+'">Remove</button></div>';
+    el.appendChild(div);
+    div.querySelectorAll('input,select,textarea').forEach(function(inp){
+      inp.addEventListener('input',function(){
+        var i=parseInt(this.getAttribute('data-idx'));
+        var f=this.getAttribute('data-field');
+        prospects[i][f]=this.value;
+        if(f==='name'||f==='stage')renderProspects();
+        else save('mtm_dating_prospects',prospects);
+      });
+    });
+    div.querySelector('.btn-danger').addEventListener('click',function(){
+      var i=parseInt(this.getAttribute('data-idx'));
+      prospects.splice(i,1);save('mtm_dating_prospects',prospects);renderProspects();
+    });
+  });
+}
+
+function addProspect(){
+  prospects.push({name:'',platform:'',location:'',stage:'Matched',notes:''});
+  save('mtm_dating_prospects',prospects);renderProspects();
+}
+
+function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+renderWish();renderPlatforms();renderQuestions();renderFlags();renderScore();renderProspects();
+</script>
+<script src="/jarvis-nav.js"></script>
+</body>
+</html>

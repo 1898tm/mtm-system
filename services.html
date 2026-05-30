@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Services · MAVTG Medical Travel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{--black:#1d1d1f;--gray:#6e6e73;--light:#f5f5f7;--white:#fff;--blue:#0071e3;--red:#ff3b5c;--divider:#d2d2d7;--font:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;}
+html{scroll-behavior:smooth;}
+body{font-family:var(--font);background:var(--white);color:var(--black);overflow-x:hidden;-webkit-font-smoothing:antialiased;}
+.coming-soon-bar{background:#0071e3;color:#fff;text-align:center;padding:.6rem 1rem;font-size:.8rem;font-weight:600;letter-spacing:.02em;}
+.coming-soon-bar a{color:#fff;text-decoration:underline;margin-left:.5rem;}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 2rem;background:rgba(255,255,255,.88);backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid rgba(0,0,0,.08);}
+.nav-logo{font-size:.95rem;font-weight:700;letter-spacing:.04em;color:var(--black);text-decoration:none;}
+.nav-logo span{color:var(--red);}
+.nav-links{display:flex;gap:1.5rem;list-style:none;align-items:center;}
+.nav-links a{font-size:.78rem;color:var(--black);text-decoration:none;opacity:.75;transition:opacity .2s;}
+.nav-links a:hover,.nav-links a.active{opacity:1;}
+.nav-cta{color:var(--blue)!important;opacity:1!important;font-weight:600;}
+.hamburger{display:none;flex-direction:column;gap:4px;cursor:pointer;background:none;border:none;padding:4px;}
+.hamburger span{display:block;width:20px;height:1.5px;background:var(--black);}
+.mob-nav{display:none;position:fixed;top:52px;left:0;right:0;background:rgba(255,255,255,.97);backdrop-filter:blur(20px);border-bottom:1px solid var(--divider);padding:1rem 2rem 1.5rem;z-index:99;}
+.mob-nav.open{display:block;}
+.mob-nav a{display:block;padding:.65rem 0;font-size:.9rem;color:var(--black);text-decoration:none;border-bottom:1px solid var(--divider);}
+.page-hero{padding:9rem 2rem 5rem;background:var(--black);color:#fff;text-align:center;}
+.page-hero .label{font-size:.72rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--red);margin-bottom:1rem;display:block;}
+.page-hero h1{font-size:clamp(2.5rem,6vw,4.5rem);font-weight:700;letter-spacing:-.04em;line-height:1.04;margin-bottom:1rem;}
+.page-hero p{font-size:clamp(1rem,2vw,1.15rem);color:rgba(255,255,255,.6);max-width:580px;margin:0 auto;line-height:1.7;}
+.c{max-width:960px;margin:0 auto;}
+section{padding:5rem 2rem;}
+.slabel{font-size:.72rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--red);margin-bottom:.8rem;display:block;}
+.stitle{font-size:clamp(1.8rem,4vw,2.8rem);font-weight:700;letter-spacing:-.03em;line-height:1.1;margin-bottom:.85rem;}
+.ssub{font-size:1rem;color:var(--gray);line-height:1.75;max-width:640px;}
+.services-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.5rem;margin-top:2.5rem;}
+.svc-card{border:1px solid var(--divider);border-radius:18px;padding:2rem;transition:all .2s;background:var(--white);}
+.svc-card:hover{border-color:var(--red);box-shadow:0 8px 30px rgba(0,0,0,.06);}
+.svc-icon{font-size:2rem;margin-bottom:1rem;}
+.svc-title{font-size:1.05rem;font-weight:700;margin-bottom:.5rem;letter-spacing:-.02em;}
+.svc-desc{font-size:.88rem;color:var(--gray);line-height:1.65;}
+.svc-tag{display:inline-block;font-size:.65rem;font-weight:600;background:rgba(255,59,92,.08);color:var(--red);padding:.2rem .55rem;border-radius:980px;margin-top:.75rem;}
+.steps{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1.5rem;margin-top:2rem;}
+.step{text-align:center;padding:1.5rem;}
+.step-num{width:44px;height:44px;border-radius:50%;background:var(--red);color:#fff;font-size:.9rem;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;}
+.step-title{font-size:.92rem;font-weight:600;margin-bottom:.4rem;}
+.step-desc{font-size:.8rem;color:var(--gray);line-height:1.6;}
+.pricing-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.25rem;margin-top:2rem;}
+.price-card{border:1px solid var(--divider);border-radius:18px;padding:2rem;position:relative;}
+.price-card.featured{border-color:var(--red);background:rgba(255,59,92,.025);}
+.price-badge{position:absolute;top:-12px;right:1.5rem;background:var(--red);color:#fff;font-size:.65rem;font-weight:700;padding:.2rem .7rem;border-radius:980px;letter-spacing:.04em;text-transform:uppercase;}
+.price-tier{font-size:.72rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--gray);margin-bottom:.5rem;}
+.price-name{font-size:1.2rem;font-weight:700;margin-bottom:.5rem;}
+.price-desc{font-size:.82rem;color:var(--gray);line-height:1.55;margin-bottom:1.25rem;}
+.price-features{list-style:none;display:flex;flex-direction:column;gap:.45rem;margin-bottom:1.5rem;}
+.price-features li{font-size:.82rem;color:var(--black);display:flex;align-items:flex-start;gap:.45rem;}
+.price-features li::before{content:'✓';color:var(--red);font-weight:700;flex-shrink:0;}
+.price-cta{display:block;width:100%;padding:.7rem;border-radius:980px;font-size:.85rem;font-weight:600;text-align:center;text-decoration:none;cursor:pointer;border:none;font-family:var(--font);transition:all .18s;}
+.price-cta-p{background:var(--red);color:#fff;}
+.price-cta-p:hover{background:#e0334f;}
+.price-cta-s{background:var(--light);color:var(--black);}
+.price-cta-s:hover{background:#e8e8ed;}
+.cta-banner{background:var(--black);color:#fff;padding:4rem 2rem;text-align:center;}
+.cta-banner h2{font-size:clamp(1.8rem,4vw,2.8rem);font-weight:700;letter-spacing:-.03em;margin-bottom:.75rem;}
+.cta-banner p{font-size:1rem;color:rgba(255,255,255,.55);max-width:500px;margin:0 auto 2rem;line-height:1.65;}
+footer{background:var(--black);color:#fff;padding:4rem 2rem 2rem;}
+.ft{display:grid;grid-template-columns:1.6fr repeat(4,1fr);gap:2.5rem;max-width:1000px;margin:0 auto 3rem;padding-bottom:3rem;border-bottom:1px solid rgba(255,255,255,.07);}
+.f-logo{font-size:1.05rem;font-weight:700;color:#fff;margin-bottom:.3rem;}
+.f-logo span{color:var(--red);}
+.f-tag{font-size:.72rem;color:rgba(255,255,255,.25);}
+.f-col-title{font-size:.66rem;font-weight:600;color:rgba(255,255,255,.22);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.9rem;}
+.f-col ul{list-style:none;display:flex;flex-direction:column;gap:.45rem;}
+.f-col a{font-size:.78rem;color:rgba(255,255,255,.45);text-decoration:none;transition:color .2s;}
+.f-col a:hover{color:rgba(255,255,255,.8);}
+.f-bottom{font-size:.68rem;color:rgba(255,255,255,.2);text-align:center;max-width:1000px;margin:0 auto;}
+@media(max-width:768px){.nav-links{display:none;}.hamburger{display:flex;}.ft{grid-template-columns:1fr 1fr;}}
+@media(max-width:480px){.ft{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div class="coming-soon-bar">🚀 Services launching soon — pricing shown is not yet active. <a href="/">Back to main page</a></div>
+<nav>
+  <a href="/" class="nav-logo">MAV<span>TG</span></a>
+  <ul class="nav-links">
+    <li><a href="/#health">Health</a></li>
+    <li><a href="/#books">Books</a></li>
+    <li><a href="/#travel">Travel</a></li>
+    <li><a href="services.html" class="active">Services</a></li>
+    <li><a href="https://www.mavtg.com" target="_blank">About</a></li>
+    <li><a href="https://www.mavtg.com" target="_blank" class="nav-cta">Contact</a></li>
+  </ul>
+  <button class="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+<div class="mob-nav" id="mob-nav">
+  <a href="/">Home</a><a href="services.html">Services</a><a href="https://www.mavtg.com" target="_blank">About</a><a href="https://www.mavtg.com" target="_blank">Contact</a>
+</div>
+
+<div class="page-hero">
+  <span class="label">What We Do</span>
+  <h1>Medical Travel,<br>Done Right</h1>
+  <p>From dialysis destination research to full trip planning — MAVTG handles everything so you can focus on living.</p>
+</div>
+
+<section>
+  <div class="c">
+    <span class="slabel">Core Services</span>
+    <h2 class="stitle">Everything a Medical Traveler Needs</h2>
+    <p class="ssub">Built by a dialysis patient who's navigated every obstacle you're facing. We don't guess — we've been there.</p>
+    <div class="services-grid">
+      <div class="svc-card">
+        <div class="svc-icon">✈️</div>
+        <div class="svc-title">Medical Travel Consulting</div>
+        <div class="svc-desc">Personalized trip planning for dialysis patients and medical tourists. We research centers, verify availability, and coordinate your full itinerary around your treatment schedule.</div>
+        <span class="svc-tag">Most Popular</span>
+      </div>
+      <div class="svc-card">
+        <div class="svc-icon">🚢</div>
+        <div class="svc-title">Dialysis Cruise Planning</div>
+        <div class="svc-desc">Cruise lines with onboard dialysis, port-side center backup plans, and full pre-trip verification. We've done the research — you enjoy the vacation.</div>
+        <span class="svc-tag">Specialist Service</span>
+      </div>
+      <div class="svc-card">
+        <div class="svc-icon">🗺️</div>
+        <div class="svc-title">Destination Research</div>
+        <div class="svc-desc">Country-by-country dialysis access reports: center availability, cost, insurance compatibility, emergency protocols, and local healthcare quality.</div>
+        <span class="svc-tag">Research</span>
+      </div>
+      <div class="svc-card">
+        <div class="svc-icon">🏥</div>
+        <div class="svc-title">Healthcare Navigation</div>
+        <div class="svc-desc">Guidance through the maze of insurance pre-authorizations, international healthcare systems, and dialysis center requirements before you depart.</div>
+        <span class="svc-tag">Concierge</span>
+      </div>
+      <div class="svc-card">
+        <div class="svc-icon">👕</div>
+        <div class="svc-title">PICC &amp; Port-Access Gear</div>
+        <div class="svc-desc">Port-access hoodies, PICC sleeves, and adaptive clothing designed for dialysis and PICC patients. Comfort and treatment access, combined.</div>
+        <span class="svc-tag">Clothing Line</span>
+      </div>
+      <div class="svc-card">
+        <div class="svc-icon">🎤</div>
+        <div class="svc-title">Speaking &amp; Advocacy</div>
+        <div class="svc-desc">Michael speaks at patient conferences, dialysis centers, and healthcare events about travel with kidney disease, quality of life, and the patient experience.</div>
+        <span class="svc-tag">Speaking</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="background:var(--light);">
+  <div class="c">
+    <span class="slabel">How It Works</span>
+    <h2 class="stitle">Start to Finish in 4 Steps</h2>
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div><div class="step-title">Tell Us Your Dream</div><div class="step-desc">Fill out our contact form with your destination, travel dates, and treatment needs.</div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-title">We Research Everything</div><div class="step-desc">MAVTG verifies dialysis access, insurance requirements, and builds your custom travel brief.</div></div>
+      <div class="step"><div class="step-num">3</div><div class="step-title">Plan Together</div><div class="step-desc">A 1-on-1 consultation to go through the plan, answer questions, and lock in your itinerary.</div></div>
+      <div class="step"><div class="step-num">4</div><div class="step-title">Travel With Confidence</div><div class="step-desc">You depart with full documentation, backup plans, and 24-hour support contact.</div></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="c">
+    <span class="slabel">Pricing</span>
+    <h2 class="stitle">Simple, Transparent Pricing</h2>
+    <p class="ssub">No hidden fees. Consultation-first — we scope your trip before any payment is required.</p>
+    <div class="pricing-grid">
+      <div class="price-card">
+        <div class="price-tier">Starter</div>
+        <div class="price-name">Destination Brief</div>
+        <div class="price-desc">A written report on dialysis access, costs, and logistics for one destination.</div>
+        <ul class="price-features"><li>1 destination deep-dive</li><li>Dialysis center list &amp; contacts</li><li>Insurance compatibility notes</li><li>Written PDF report</li></ul>
+        <a href="https://www.mavtg.com" class="price-cta price-cta-s">Get Started</a>
+      </div>
+      <div class="price-card featured">
+        <div class="price-badge">Most Popular</div>
+        <div class="price-tier">Full Service</div>
+        <div class="price-name">Trip Planning Package</div>
+        <div class="price-desc">End-to-end trip planning with consultation, itinerary, and pre-departure support.</div>
+        <ul class="price-features"><li>Multi-destination research</li><li>1-on-1 planning consultation</li><li>Custom itinerary document</li><li>Insurance pre-auth guidance</li><li>Emergency protocol prep</li><li>Pre-departure check-in</li></ul>
+        <a href="https://www.mavtg.com" class="price-cta price-cta-p">Book a Consultation</a>
+      </div>
+      <div class="price-card">
+        <div class="price-tier">Cruise</div>
+        <div class="price-name">Dialysis Cruise Package</div>
+        <div class="price-desc">Specialized cruise planning with verified onboard and port dialysis access.</div>
+        <ul class="price-features"><li>Cruise line vetting</li><li>Onboard dialysis verification</li><li>Port-side backup centers</li><li>Cruise line coordination</li><li>Medical documentation prep</li></ul>
+        <a href="https://www.mavtg.com" class="price-cta price-cta-s">Inquire</a>
+      </div>
+    </div>
+    <p style="font-size:.75rem;color:var(--gray);text-align:center;margin-top:1.5rem;">Pricing discussed during free initial consultation. Final quote depends on destination complexity and travel dates.</p>
+  </div>
+</section>
+
+<div class="cta-banner">
+  <h2>Ready to Travel Again?</h2>
+  <p>Dialysis doesn't have to mean staying home. Let MAVTG show you what's possible.</p>
+  <a href="https://www.mavtg.com" style="display:inline-flex;align-items:center;padding:.72rem 1.65rem;border-radius:980px;font-size:.88rem;font-weight:600;text-decoration:none;background:var(--red);color:#fff;">Start Planning Now</a>
+</div>
+
+<footer>
+  <div class="ft">
+    <div><div class="f-logo">MAV<span>TG</span></div><div class="f-tag">Medical Adventure Voyage Travel Group · Florida, USA · Est. 2026</div></div>
+    <div class="f-col"><div class="f-col-title">Services</div><ul><li><a href="services.html">Travel Consulting</a></li><li><a href="services.html">Dialysis Cruises</a></li><li><a href="services.html">Destination Research</a></li><li><a href="services.html">Gear &amp; Clothing</a></li></ul></div>
+    <div class="f-col"><div class="f-col-title">Company</div><ul><li><a href="https://www.mavtg.com">About Michael</a></li><li><a href="https://www.mavtg.com">Contact</a></li></ul></div>
+    <div class="f-col"><div class="f-col-title">Books</div><ul><li><a href="https://www.amazon.com/dp/B0GR1ZC6X2" target="_blank" rel="noopener">I Missed the Signs</a></li><li><a href="https://www.amazon.com/dp/B0FXB17BG7" target="_blank" rel="noopener">Big Kidney Journey</a></li></ul></div>
+    <div class="f-col"><div class="f-col-title">Contact</div><ul><li><a href="mailto:info@mavtg.com">info@mavtg.com</a></li></ul></div>
+  </div>
+  <p class="f-bottom">© 2026 MOORE AUDAX VOYAGE TRAVEL GROUP, LLC · All rights reserved</p>
+</footer>
+<script>document.querySelector('.hamburger').addEventListener('click',function(){document.getElementById('mob-nav').classList.toggle('open');});</script>
+</body>
+</html>

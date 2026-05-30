@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#000000">
-<title>MTM — Michael T. Moore</title>
+<title>Moore Money · MTM</title>
 <style>
 :root{
   --gold:#ffd60a;--cyan:#0071e3;--green:#30d158;--red:#ff453a;--purple:#bf5af2;--orange:#ff9f0a;--burgundy:#8b1a2f;
@@ -26,13 +26,48 @@ body::before{content:'';position:fixed;inset:0;z-index:0;
 .hero-monogram{font-size:4.5rem;font-weight:800;letter-spacing:-.06em;
   background:linear-gradient(145deg,#fff 40%,rgba(255,214,10,.7));
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  line-height:1;margin-bottom:.3rem}
+  line-height:1;margin-bottom:.3rem;
+  cursor:pointer;display:inline-block;transition:transform .15s;
+  -webkit-user-select:none;user-select:none}
+.hero-monogram:active{transform:scale(.94)}
+.hero-monogram.listening{
+  animation:pulse-gold 1.2s ease-in-out infinite;
+  background:linear-gradient(145deg,var(--gold) 0%,#fff 60%,rgba(255,214,10,.9));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+@keyframes pulse-gold{
+  0%,100%{filter:drop-shadow(0 0 0px rgba(255,214,10,0))}
+  50%{filter:drop-shadow(0 0 18px rgba(255,214,10,.7))}
+}
+.hero-system{font-size:.58rem;font-weight:700;letter-spacing:.28em;
+  color:rgba(255,255,255,.22);text-transform:uppercase;margin-bottom:.35rem}
 .hero-name{font-size:.72rem;font-weight:700;letter-spacing:.32em;color:rgba(255,214,10,.75);text-transform:uppercase;margin-bottom:.5rem}
-.hero-motto{display:inline-flex;align-items:center;gap:.5rem;
-  font-size:.65rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase;
-  color:rgba(255,214,10,.7);border:1px solid rgba(255,214,10,.22);
-  padding:.32rem .9rem;border-radius:980px;background:rgba(255,214,10,.04)}
 .hero-date{font-size:.72rem;color:var(--dimmer);margin-top:1rem;letter-spacing:.04em}
+.hero-voice-hint{font-size:.6rem;color:rgba(255,255,255,.18);margin-top:.5rem;letter-spacing:.06em}
+
+/* Voice overlay */
+.voice-overlay{display:none;position:fixed;inset:0;z-index:200;
+  background:rgba(0,0,0,.88);backdrop-filter:blur(24px);
+  align-items:center;justify-content:center;flex-direction:column;gap:1.5rem}
+.voice-overlay.active{display:flex}
+.voice-ring{width:88px;height:88px;border-radius:50%;
+  background:rgba(255,214,10,.08);border:2px solid rgba(255,214,10,.35);
+  display:flex;align-items:center;justify-content:center;
+  font-size:2.2rem;animation:ring-pulse 1.2s ease-in-out infinite}
+@keyframes ring-pulse{
+  0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(255,214,10,.3)}
+  50%{transform:scale(1.06);box-shadow:0 0 0 14px rgba(255,214,10,0)}
+}
+.voice-status{font-size:.75rem;font-weight:600;letter-spacing:.12em;
+  text-transform:uppercase;color:rgba(255,214,10,.8)}
+.voice-transcript{font-size:1.05rem;font-weight:500;color:#fff;
+  min-height:1.5rem;text-align:center;max-width:300px;line-height:1.5}
+.voice-cancel{font-size:.7rem;color:rgba(255,255,255,.3);
+  background:none;border:1px solid rgba(255,255,255,.12);
+  padding:.45rem 1.2rem;border-radius:980px;cursor:pointer;
+  font-family:var(--font);margin-top:.5rem;transition:all .2s}
+.voice-cancel:hover{color:rgba(255,255,255,.7);border-color:rgba(255,255,255,.3)}
+.voice-commands{font-size:.65rem;color:rgba(255,255,255,.2);
+  text-align:center;line-height:1.9;max-width:260px}
 
 /* Section */
 .page{position:relative;z-index:1;max-width:960px;margin:0 auto;padding:0 1rem 6rem}
@@ -111,11 +146,22 @@ body::before{content:'';position:fixed;inset:0;z-index:0;
 </head>
 <body>
 
+<!-- VOICE OVERLAY -->
+<div class="voice-overlay" id="voice-overlay">
+  <div class="voice-ring">🎙</div>
+  <div class="voice-status" id="voice-status">Listening…</div>
+  <div class="voice-transcript" id="voice-transcript"></div>
+  <div class="voice-commands">Style · Travel · Dating · Health<br>Finance · Books · MAVTG · Home</div>
+  <button class="voice-cancel" onclick="stopVoice()">Cancel</button>
+</div>
+
 <!-- HERO -->
 <div class="hero">
-  <div class="hero-monogram">MTM</div>
+  <div class="hero-system">Moore Money</div>
+  <div class="hero-monogram" id="hero-monogram" onclick="toggleVoice()" title="Tap to speak">MTM</div>
   <div class="hero-name">✦ SINE LIMITE ✦</div>
   <div class="hero-date" id="hero-date"></div>
+  <div class="hero-voice-hint">Tap MTM to speak</div>
 </div>
 
 <div class="page">
@@ -124,7 +170,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;
   <div class="status-bar">
     <div class="status-dot"></div>
     <div class="status-text">
-      <strong>MTM System Online</strong> — 5 automated agents running
+      <strong>Moore Money Online</strong> — 5 automated agents running
     </div>
     <div class="status-time" id="status-time"></div>
   </div>
@@ -381,6 +427,90 @@ function updateDate() {
 }
 updateDate();
 setInterval(updateDate, 30000);
+
+// ── Voice ──────────────────────────────────────────────
+var recognition = null;
+var listening = false;
+
+function initVoice() {
+  var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognition) return null;
+  var r = new SpeechRecognition();
+  r.lang = 'en-US';
+  r.interimResults = true;
+  r.maxAlternatives = 1;
+  r.onresult = function(e) {
+    var t = Array.from(e.results).map(function(r){return r[0].transcript}).join('');
+    document.getElementById('voice-transcript').textContent = t;
+    if (e.results[e.results.length-1].isFinal) processCommand(t);
+  };
+  r.onend = function() { if (listening) stopVoice(); };
+  r.onerror = function(e) {
+    document.getElementById('voice-status').textContent = 'Error: ' + e.error;
+    setTimeout(stopVoice, 1200);
+  };
+  return r;
+}
+
+function toggleVoice() {
+  if (listening) { stopVoice(); return; }
+  recognition = initVoice();
+  if (!recognition) {
+    alert('Voice not supported in this browser. Use Chrome or Safari.');
+    return;
+  }
+  listening = true;
+  document.getElementById('voice-overlay').classList.add('active');
+  document.getElementById('hero-monogram').classList.add('listening');
+  document.getElementById('voice-status').textContent = 'Listening…';
+  document.getElementById('voice-transcript').textContent = '';
+  recognition.start();
+}
+
+function stopVoice() {
+  listening = false;
+  if (recognition) { try { recognition.stop(); } catch(e){} recognition = null; }
+  document.getElementById('voice-overlay').classList.remove('active');
+  document.getElementById('hero-monogram').classList.remove('listening');
+}
+
+function processCommand(text) {
+  var t = text.toLowerCase().trim();
+  var routes = {
+    'style':    'style.html',
+    'fashion':  'style.html',
+    'wardrobe': 'style.html',
+    'travel':   'packing.html',
+    'packing':  'packing.html',
+    'pack':     'packing.html',
+    'dating':   'dating.html',
+    'date':     'dating.html',
+    'finance':  'finance.html',
+    'money':    'finance.html',
+    'portfolio':'finance.html',
+    'health':   'health.html',
+    'medical':  'health.html',
+    'dialysis': 'health.html',
+    'books':    'books.html',
+    'legacy':   'books.html',
+    'writing':  'books.html',
+    'services': 'services.html',
+    'mavtg':    'https://www.mavtg.com',
+    'website':  'https://www.mavtg.com',
+    'home':     'mtm-home.html',
+  };
+  var dest = null;
+  for (var key in routes) {
+    if (t.indexOf(key) !== -1) { dest = routes[key]; break; }
+  }
+  stopVoice();
+  if (dest) {
+    setTimeout(function() {
+      if (dest.startsWith('http')) window.open(dest, '_blank');
+      else window.location.href = dest;
+    }, 200);
+  }
+}
 </script>
 
 </body>
